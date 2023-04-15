@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".registration"
+    android:orientation="vertical"
+    android:background="@color/Yellow_100">
+
+    <TextView
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Регистрация"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_marginTop="150dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/RegistrationLoginMemorize"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="207dp"
+            android:background="@drawable/bg_rounded_edittext"
+            android:gravity="center"
+            android:hint="Введите логин"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:textSize="18sp"
+            android:textStyle="normal" />
+
+        <EditText
+            android:id="@+id/RegistrationPasswordMemorize"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:background="@drawable/bg_rounded_edittext"
+            android:hint="Введите пароль"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textStyle="normal"
+            android:layout_marginTop="24dp" />
+
+        <EditText
+            android:id="@+id/RegistrationPasswordCheck"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:background="@drawable/bg_rounded_edittext"
+            android:hint="Повторите пароль"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textStyle="normal"
+            android:layout_marginTop="24dp" />
+
+        <Button
+            android:id="@+id/RegistrationCharacterMemorize"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="100dp"
+            android:background="@drawable/bg_background_button"
+            android:text="Зарегистрироваться"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            android:textAllCaps="false"/>
+    </LinearLayout>
+
+</FrameLayout>

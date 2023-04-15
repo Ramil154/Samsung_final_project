@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".main_list_of_app"
+    android:orientation="vertical"
+    android:background="@color/Yellow_100">
+
+    <TextView
+        android:id="@+id/characterMainListOfApp"
+        android:layout_width="match_parent"
+        android:layout_height="116dp"
+        android:background="@drawable/bg_background_button"
+        android:text="Здравствуй, Максим"
+        android:textColor="@color/white"
+        android:textStyle="normal"
+        android:textSize="24sp"/>
+
+</FrameLayout>
