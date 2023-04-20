@@ -3,18 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".stock_search"
-    android:orientation="vertical"
-    android:background="@color/Yellow_100">
-
-    <TextView
-        android:id="@+id/characterStockSearch"
+    tools:context=".ui.stock_search">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="116dp"
-        android:background="@drawable/bg_rounded_edittext"
-        android:text="Stock search"
-        android:textColor="@color/black"
-        android:textStyle="normal"
-        android:textSize="24sp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/Yellow_100">
+        <TextView
+            android:id="@+id/characterStockSearch"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:layout_marginTop="11dp"
+            android:background="@drawable/bg_rounded_edittext"
+            android:text="Поиск..."
+            android:paddingStart="15dp"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            android:textSize="24sp"/>
+    </LinearLayout>
 
 </FrameLayout>

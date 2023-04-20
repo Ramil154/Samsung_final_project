@@ -1,4 +1,4 @@
-package edu.poh.samsung_project_final;
+package edu.poh.samsung_project_final.ui;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import edu.poh.samsung_project_final.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link registration#newInstance} factory method to
+ * Use the {@link main_list_of_app#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class registration extends Fragment {
+public class main_list_of_app extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +26,7 @@ public class registration extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public registration() {
+    public main_list_of_app() {
         // Required empty public constructor
     }
 
@@ -34,11 +36,11 @@ public class registration extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment registration.
+     * @return A new instance of fragment main_list_of_app.
      */
     // TODO: Rename and change types and number of parameters
-    public static registration newInstance(String param1, String param2) {
-        registration fragment = new registration();
+    public static main_list_of_app newInstance(String param1, String param2) {
+        main_list_of_app fragment = new main_list_of_app();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +61,6 @@ public class registration extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_registration, container, false);
+        return inflater.inflate(R.layout.fragment_main_list_of_app, container, false);
     }
 }

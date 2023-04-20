@@ -1,4 +1,4 @@
-package edu.poh.samsung_project_final;
+package edu.poh.samsung_project_final.ui;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import edu.poh.samsung_project_final.R;
 
 /**
  * A simple {@link Fragment} subclass.

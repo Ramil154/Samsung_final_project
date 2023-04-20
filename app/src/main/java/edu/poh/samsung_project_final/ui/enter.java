@@ -1,4 +1,4 @@
-package edu.poh.samsung_project_final;
+package edu.poh.samsung_project_final.ui;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import edu.poh.samsung_project_final.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link stock_search#newInstance} factory method to
+ * Use the {@link enter#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class stock_search extends Fragment {
+public class enter extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +26,7 @@ public class stock_search extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public stock_search() {
+    public enter() {
         // Required empty public constructor
     }
 
@@ -34,11 +36,11 @@ public class stock_search extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment stock_search.
+     * @return A new instance of fragment enter.
      */
     // TODO: Rename and change types and number of parameters
-    public static stock_search newInstance(String param1, String param2) {
-        stock_search fragment = new stock_search();
+    public static enter newInstance(String param1, String param2) {
+        enter fragment = new enter();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +61,6 @@ public class stock_search extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stock_search, container, false);
+        return inflater.inflate(R.layout.fragment_enter, container, false);
     }
 }

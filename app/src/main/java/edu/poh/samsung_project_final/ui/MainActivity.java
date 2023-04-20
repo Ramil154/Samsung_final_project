@@ -1,4 +1,4 @@
-package edu.poh.samsung_project_final;
+package edu.poh.samsung_project_final.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {

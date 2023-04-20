@@ -1,4 +1,4 @@
-package edu.poh.samsung_project_final;
+package edu.poh.samsung_project_final.ui;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import edu.poh.samsung_project_final.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link enter#newInstance} factory method to
+ * Use the {@link favourites_of_character#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class enter extends Fragment {
+public class favourites_of_character extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +26,7 @@ public class enter extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public enter() {
+    public favourites_of_character() {
         // Required empty public constructor
     }
 
@@ -34,11 +36,11 @@ public class enter extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment enter.
+     * @return A new instance of fragment favourites_of_character.
      */
     // TODO: Rename and change types and number of parameters
-    public static enter newInstance(String param1, String param2) {
-        enter fragment = new enter();
+    public static favourites_of_character newInstance(String param1, String param2) {
+        favourites_of_character fragment = new favourites_of_character();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +61,6 @@ public class enter extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_enter, container, false);
+        return inflater.inflate(R.layout.fragment_favourites_of_character, container, false);
     }
 }
