@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/Yellow_100">
+        android:background="@color/Yellow_200">
         <TextView
             android:id="@+id/characterStockSearch"
             android:layout_width="match_parent"
@@ -20,6 +20,11 @@
             android:textColor="@color/black"
             android:textStyle="normal"
             android:textSize="24sp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/stockRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="40dp"/>
     </LinearLayout>
 
 </FrameLayout>

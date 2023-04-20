@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.main_list_of_app"
     android:orientation="vertical"
-    android:background="@color/Yellow_100">
+    android:background="@color/Yellow_200">
 
     <TextView
         android:id="@+id/characterMainListOfApp"
