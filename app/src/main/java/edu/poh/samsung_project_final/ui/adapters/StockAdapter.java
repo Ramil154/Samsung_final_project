@@ -40,8 +40,8 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
         ListItemOfStockBinding binding = ListItemOfStockBinding.bind(itemView);
         @SuppressLint("SetTextI18n")
         private void bind(stockSearchModel item){
-            if (item.name_of_stock.length() > 14){
-                binding.whichStockIsHere.setText(item.name_of_stock.substring(0,14)+"...");
+            if (item.name_of_stock.length() > 15){
+                binding.whichStockIsHere.setText(item.name_of_stock.substring(0,15)+"...");
             }else{
                 binding.whichStockIsHere.setText(item.name_of_stock);
             }

@@ -42,7 +42,11 @@
         android:id="@+id/favourites_of_character"
         android:name="edu.poh.samsung_project_final.ui.favourites_of_character"
         android:label="fragment_favourites_of_character"
-        tools:layout="@layout/fragment_favourites_of_character" />
+        tools:layout="@layout/fragment_favourites_of_character" >
+        <action
+            android:id="@+id/action_favourites_of_character_to_buying_a_stock"
+            app:destination="@id/buying_a_stock" />
+    </fragment>
     <fragment
         android:id="@+id/registration"
         android:name="edu.poh.samsung_project_final.ui.registration"
