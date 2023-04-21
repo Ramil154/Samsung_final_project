@@ -3,10 +3,18 @@ package edu.poh.samsung_project_final.ui.view_models;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.poh.samsung_project_final.data.models.stockSearchModel;
 
 public class stockSearchViewModel extends ViewModel {
-    MutableLiveData<List<stockSearchModel>> LiveDataListForStocks;
+    public MutableLiveData<ArrayList<stockSearchModel>> LiveDataListForStocks;
+    public stockSearchViewModel() {
+        LiveDataListForStocks = new MutableLiveData<>();
+    }
+
+    public MutableLiveData<ArrayList<stockSearchModel>> getLiveDataListForStocks() {
+        return LiveDataListForStocks;
+    }
 }

@@ -1,29 +1,50 @@
 package edu.poh.samsung_project_final.ui;
 
+import static java.util.Collections.*;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import edu.poh.samsung_project_final.data.models.stockSearchModel;
 import edu.poh.samsung_project_final.databinding.FragmentStockSearchBinding;
 import edu.poh.samsung_project_final.ui.adapters.StockAdapter;
+import edu.poh.samsung_project_final.ui.view_models.stockSearchViewModel;
 
 
 public class stock_search extends Fragment {
     private FragmentStockSearchBinding binding;
     private StockAdapter adapter;
-    private StockAdapter.StockComparator stockComparator = new StockAdapter.StockComparator();
+    private final stockSearchViewModel model = new stockSearchViewModel();
+    private final StockAdapter.StockComparator stockComparator = new StockAdapter.StockComparator();
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentStockSearchBinding.inflate(inflater, container, false);
         return binding.getRoot();
@@ -32,50 +53,66 @@ public class stock_search extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        requestStockData();
         initStockRecyclerView();
+        updateData();
+    }
+    private void requestStockData(){
+        String url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities.json";
+        RequestQueue queque = Volley.newRequestQueue(requireContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET,url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            ArrayList<stockSearchModel> stocks = parseStockData(response);
+                            if (model.LiveDataListForStocks != null) {
+                                model.LiveDataListForStocks.setValue(stocks);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("MyWay", "VolleyError:" + error.toString());
+            }
+        });
+        queque.add(stringRequest);
+    }
+    private ArrayList<stockSearchModel> parseStockData(String response) throws JSONException {
+        ArrayList<stockSearchModel> titles = new ArrayList<>();
+        JSONObject obj = new JSONObject(response);
+        JSONObject description = obj.getJSONObject("securities");
+        JSONArray data = description.getJSONArray("data");
+        for (int i = 0;i < data.length(); i++){
+            JSONArray data_next = data.getJSONArray(i);
+            Double cost_d = data_next.optDouble(3);
+            if(Double.isNaN(cost_d)){}
+            else{
+                titles.add(new stockSearchModel(data_next.getString(9),cost_d.toString()));
+                Log.d("MyLod",cost_d.toString());
+            }
+
+        }
+        return titles;
+    }
+    private void updateData(){
+        model.LiveDataListForStocks.observe(getViewLifecycleOwner(), new Observer<ArrayList<stockSearchModel>>() {
+            @Override
+            public void onChanged(ArrayList<stockSearchModel> places) {
+                adapter.submitList(places);
+            }
+        });
     }
 
     private void initStockRecyclerView(){
         binding.stockRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new StockAdapter(stockComparator);
         binding.stockRecyclerView.setAdapter(adapter);
-        List<stockSearchModel> list = List.of(new stockSearchModel("Yandex"),
-                new stockSearchModel("Сбербанк"),
-                new stockSearchModel("Алроса"),
-                new stockSearchModel("Нижнекамскнефтехим"),
-                new stockSearchModel("Газпром"),
-                new stockSearchModel("Лукойл"),
-                new stockSearchModel("Тинькофф"),
-                new stockSearchModel("X 5"),
-                new stockSearchModel("Татнефть"),
-                new stockSearchModel("Селегдар"),
-                new stockSearchModel("Сегежа"),
-                new stockSearchModel("Новатек"),
-                new stockSearchModel("Газпром"),
-                new stockSearchModel("Лукойл"),
-                new stockSearchModel("Тинькофф"),
-                new stockSearchModel("X 5"),
-                new stockSearchModel("Татнефть"),
-                new stockSearchModel("Селегдар"),
-                new stockSearchModel("Сегежа"),
-                new stockSearchModel("Алроса"),
-                new stockSearchModel("Нижнекамскнефтехим"),
-                new stockSearchModel("Газпром"),
-                new stockSearchModel("Лукойл"),
-                new stockSearchModel("Тинькофф"),
-                new stockSearchModel("X 5"),
-                new stockSearchModel("Татнефть"),
-                new stockSearchModel("Селегдар"),
-                new stockSearchModel("Сегежа"),
-                new stockSearchModel("Новатек"),
-                new stockSearchModel("Газпром"),
-                new stockSearchModel("Лукойл"),
-                new stockSearchModel("Тинькофф"),
-                new stockSearchModel("X 5"),
-                new stockSearchModel("Татнефтьпппппп"),
-                new stockSearchModel("Селегдар"));
-        adapter.submitList(list);
     }
+
     public static stock_search newInstance(){
         return null;
     }

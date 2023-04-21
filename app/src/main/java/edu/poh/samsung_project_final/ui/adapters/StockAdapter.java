@@ -45,6 +45,7 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
             }else{
                 binding.whichStockIsHere.setText(item.name_of_stock);
             }
+            binding.costOfStockWhichIsHere.setText(item.cost_of_stock+" руб");
             //binding.costOfStockWhichIsHere.setText(item.cost_of_stock);
         }
     }
