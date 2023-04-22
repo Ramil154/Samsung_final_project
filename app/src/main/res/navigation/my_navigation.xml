@@ -23,11 +23,7 @@
         android:id="@+id/stock_search"
         android:name="edu.poh.samsung_project_final.ui.stock_search"
         android:label="fragment_stock_search"
-        tools:layout="@layout/fragment_stock_search" >
-        <action
-            android:id="@+id/action_stock_search_to_stock_page"
-            app:destination="@id/stock_page" />
-    </fragment>
+        tools:layout="@layout/fragment_stock_search" />
     <fragment
         android:id="@+id/buying_a_stock"
         android:name="edu.poh.samsung_project_final.ui.buying_a_stock"
@@ -60,5 +56,8 @@
         <action
             android:id="@+id/action_stock_page_to_buying_a_stock"
             app:destination="@id/buying_a_stock" />
+        <action
+            android:id="@+id/action_stock_page_to_stock_search"
+            app:destination="@id/stock_search" />
     </fragment>
 </navigation>

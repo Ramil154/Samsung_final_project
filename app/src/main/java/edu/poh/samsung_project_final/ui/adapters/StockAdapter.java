@@ -15,10 +15,10 @@ import edu.poh.samsung_project_final.data.models.stockSearchModel;
 import edu.poh.samsung_project_final.databinding.ListItemOfStockBinding;
 
 public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.StockHolder> {
-
-
-    public StockAdapter(@NonNull StockComparator stockComparator) {
+    Listener listener;
+    public StockAdapter(@NonNull StockComparator stockComparator, Listener listener) {
         super(stockComparator);
+        this.listener = listener;
     }
 
     @NonNull
@@ -30,7 +30,8 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
 
     @Override
     public void onBindViewHolder(@NonNull StockHolder holder, int position) {
-        holder.bind(getItem(position));
+        holder.bind(getItem(position),listener);
+
     }
 
     class StockHolder extends RecyclerView.ViewHolder {
@@ -39,14 +40,21 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
         }
         ListItemOfStockBinding binding = ListItemOfStockBinding.bind(itemView);
         @SuppressLint("SetTextI18n")
-        private void bind(stockSearchModel item){
+        private void bind(stockSearchModel item, Listener listener){
             if (item.name_of_stock.length() > 15){
                 binding.whichStockIsHere.setText(item.name_of_stock.substring(0,15)+"...");
             }else{
                 binding.whichStockIsHere.setText(item.name_of_stock);
             }
             binding.costOfStockWhichIsHere.setText(item.cost_of_stock+" руб");
-            //binding.costOfStockWhichIsHere.setText(item.cost_of_stock);
+            binding.whichStockIsHere.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClickNow(item);
+
+                }
+            });
+
         }
     }
     public static class StockComparator extends DiffUtil.ItemCallback<stockSearchModel>{
@@ -61,6 +69,9 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
         public boolean areContentsTheSame(@NonNull stockSearchModel oldItem, @NonNull stockSearchModel newItem) {
             return oldItem == newItem;
         }
+    }
+    public interface Listener{
+        void onClickNow(stockSearchModel item);
     }
 
 }
