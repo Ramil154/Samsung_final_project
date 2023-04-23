@@ -10,6 +10,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -44,12 +47,19 @@ import edu.poh.samsung_project_final.ui.view_models.stockSearchViewModel;
 public class stock_search extends Fragment implements StockAdapter.Listener {
     private FragmentStockSearchBinding binding;
     private StockAdapter adapter;
+    final String KEY_ID = "1";
     private final stockSearchViewModel model = new stockSearchViewModel();
     private final StockAdapter.StockComparator stockComparator = new StockAdapter.StockComparator();
+    private NavController navController;
+    NavHostFragment navHostFragment;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentStockSearchBinding.inflate(inflater, container, false);
+
+        navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
+        navController = navHostFragment.getNavController();
+
         return binding.getRoot();
     }
 
@@ -91,16 +101,16 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
         JSONArray data = description.getJSONArray("data");
         for (int i = 0;i < data.length(); i++){
             JSONArray data_next = data.getJSONArray(i);
-            Double cost_d = data_next.optDouble(15);
+            Double cost_d = data_next.optDouble(3);
             if(Double.isNaN(cost_d)){}
             else{
                 titles.add(new stockSearchModel(data_next.getString(9),cost_d.toString(),data_next.getString(0)));
-                Log.d("MyLod",cost_d.toString());
             }
 
         }
         return titles;
     }
+
     private void updateData(){
         model.LiveDataListForStocks.observe(getViewLifecycleOwner(), new Observer<ArrayList<stockSearchModel>>() {
             @Override
@@ -122,11 +132,11 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
 
     @Override
     public void onClickNow(stockSearchModel item) {
-        stock_page fragment = new stock_page();
         Bundle bundle = new Bundle();
-        bundle.putString("1",item.id_of_stock);
+        bundle.putString(KEY_ID,item.id_of_stock);
+        Log.d("MyLog",item.id_of_stock);
+        stock_page fragment = new stock_page();
         fragment.setArguments(bundle);
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.nav_host_fragment_activity_main,fragment).addToBackStack("").commit();
+        navController.navigate(R.id.action_stock_search_to_stock_page, bundle);
     }
 }

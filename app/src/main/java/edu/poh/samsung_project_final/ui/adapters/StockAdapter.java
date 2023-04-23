@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +35,7 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
 
     }
 
-    class StockHolder extends RecyclerView.ViewHolder {
+    static class StockHolder extends RecyclerView.ViewHolder {
         public StockHolder(@NonNull View view) {
             super(view);
         }
@@ -47,14 +48,12 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
                 binding.whichStockIsHere.setText(item.name_of_stock);
             }
             binding.costOfStockWhichIsHere.setText(item.cost_of_stock+" руб");
-            binding.whichStockIsHere.setOnClickListener(new View.OnClickListener() {
+            binding.cardViewRecycler.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onClickNow(item);
-
                 }
             });
-
         }
     }
     public static class StockComparator extends DiffUtil.ItemCallback<stockSearchModel>{
@@ -73,5 +72,6 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
     public interface Listener{
         void onClickNow(stockSearchModel item);
     }
+
 
 }
