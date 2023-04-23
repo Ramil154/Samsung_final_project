@@ -138,5 +138,6 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
         stock_page fragment = new stock_page();
         fragment.setArguments(bundle);
         navController.navigate(R.id.action_stock_search_to_stock_page, bundle);
+        //fragmentManager.beginTransaction().replace(R.id.nav_host_fragment_activity_main,fragment).addToBackStack("").commit();
     }
 }

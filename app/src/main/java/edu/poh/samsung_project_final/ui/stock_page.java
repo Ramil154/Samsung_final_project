@@ -35,10 +35,11 @@ import edu.poh.samsung_project_final.databinding.FragmentStockPageBinding;
 import edu.poh.samsung_project_final.databinding.FragmentStockSearchBinding;
 import edu.poh.samsung_project_final.ui.adapters.StockAdapter;
 
-public class stock_page extends Fragment implements StockAdapter.Listener {
+public class stock_page extends Fragment{
     private FragmentStockPageBinding binding;
     private final String KEY_ID = "1";
     private NavHostFragment navHostFragment;
+    private String id;
     private NavController navController;
     public static stock_page newInstance() {
         return null;
@@ -51,12 +52,16 @@ public class stock_page extends Fragment implements StockAdapter.Listener {
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
         Bundle args = getArguments();
-        String id = args.getString(KEY_ID);
+        id = args.getString(KEY_ID);
         parseStockDataCost(id);
         binding.ButtonForChoseToByuingStock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_stock_page_to_buying_a_stock);
+                Bundle bundle = new Bundle();
+                bundle.putString(KEY_ID,id);
+                buying_a_stock fragment = new buying_a_stock();
+                fragment.setArguments(bundle);
+                navController.navigate(R.id.action_stock_page_to_buying_a_stock,bundle);
             }
         });
         return binding.getRoot();
@@ -102,15 +107,5 @@ public class stock_page extends Fragment implements StockAdapter.Listener {
             }
         });
         queque.add(stringRequest);
-    }
-
-    @Override
-    public void onClickNow(stockSearchModel item) {
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_ID,item.id_of_stock);
-        Log.d("MyLog",item.id_of_stock);
-        stock_page fragment = new stock_page();
-        fragment.setArguments(bundle);
-        navController.navigate(R.id.action_stock_search_to_stock_page, bundle);
     }
 }
