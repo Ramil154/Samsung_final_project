@@ -1,9 +1,13 @@
 package edu.poh.samsung_project_final.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -11,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,7 +29,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.poh.samsung_project_final.R;
+import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
 import edu.poh.samsung_project_final.databinding.FragmentBuyingAStockBinding;
+import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 
 
 public class buying_a_stock extends Fragment {
@@ -32,26 +39,19 @@ public class buying_a_stock extends Fragment {
     private final String KEY_ID = "1";
     private NavHostFragment navHostFragment;
     private NavController navController;
+    private StockDataViewModel stockDataViewModel;
+    private String name_of_stock;
+    private String cost_of_stock;
+    private String id_of_stock;
     public static buying_a_stock newInstance() {
         return null;
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentBuyingAStockBinding.inflate(inflater, container, false);
-        navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
-        navController = navHostFragment.getNavController();
-        Bundle args = getArguments();
-        String id = args.getString(KEY_ID);
-        parseStockDataCost(id);
-        binding.GoToFavourites.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
-            }
-        });
         return binding.getRoot();
     }
 
@@ -61,11 +61,11 @@ public class buying_a_stock extends Fragment {
         JSONObject obj = jsonObject.getJSONObject("securities");
         JSONArray data = obj.getJSONArray("data");
         JSONArray data_next = data.getJSONArray(0);
-        String name = data_next.getString(9);
+        name_of_stock = data_next.getString(9);
         Double cost_d = data_next.optDouble(3);
-        String cost_str = cost_d.toString();
-        binding.stockSBuyingName.setText(name);
-        binding.stockSBuyingCost.setText(cost_str + " руб");
+        cost_of_stock = cost_d.toString();
+        binding.stockSBuyingName.setText(name_of_stock);
+        binding.stockSBuyingCost.setText(cost_of_stock + " руб");
     }
 
     private void parseStockDataCost(String sid) {
@@ -89,5 +89,38 @@ public class buying_a_stock extends Fragment {
             }
         });
         queque.add(stringRequest);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        buying_a_stock.super.onViewCreated(view, savedInstanceState);
+        this.stockDataViewModel = new ViewModelProvider(this).get(StockDataViewModel.class);
+        navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
+        navController = navHostFragment.getNavController();
+        Bundle args = getArguments();
+        id_of_stock= args.getString(KEY_ID);
+        parseStockDataCost(id_of_stock);
+        binding.GoToFavourites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    String count = binding.gettingCountOfStocks.getText().toString();
+                    char symbol = count.charAt(0);
+                    if (symbol == '0' || symbol == '.' || symbol == ','){
+                        throw new NumberFormatException();
+                    }
+                    Log.d("MyLog",id_of_stock +"  " + Integer.parseInt(count));
+                    stockDataViewModel.insertStock(new StockEntity(id_of_stock,Integer.parseInt(count)));
+                    navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
+                }
+                catch (StringIndexOutOfBoundsException exception){
+                    Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ничего не ввели", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
     }
 }

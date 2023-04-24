@@ -79,9 +79,7 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
                     public void onResponse(String response) {
                         try {
                             ArrayList<stockSearchModel> stocks = parseStockData(response);
-                            if (model.LiveDataListForStocks != null) {
                                 model.LiveDataListForStocks.setValue(stocks);
-                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
