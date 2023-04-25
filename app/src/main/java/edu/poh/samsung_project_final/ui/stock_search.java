@@ -2,6 +2,7 @@ package edu.poh.samsung_project_final.ui;
 
 import static java.util.Collections.*;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -92,6 +93,7 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
         });
         queque.add(stringRequest);
     }
+    @SuppressLint("DefaultLocale")
     private ArrayList<stockSearchModel> parseStockData(String response) throws JSONException {
         ArrayList<stockSearchModel> titles = new ArrayList<>();
         JSONObject obj = new JSONObject(response);
@@ -102,7 +104,17 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
             Double cost_d = data_next.optDouble(3);
             if(Double.isNaN(cost_d)){}
             else{
-                titles.add(new stockSearchModel(data_next.getString(9),cost_d.toString(),data_next.getString(0)));
+                String cost;
+                if(cost_d < 1.0){
+                    cost = String.format("%.3f",cost_d);
+                }
+                else if (cost_d < 10.0){
+                    cost = String.format("%.2f",cost_d);
+                }
+                else{
+                    cost = String.format("%.1f",cost_d);
+                }
+                titles.add(new stockSearchModel(data_next.getString(9),cost,data_next.getString(0)));
             }
 
         }
@@ -132,7 +144,6 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
     public void onClickNow(stockSearchModel item) {
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ID,item.id_of_stock);
-        Log.d("MyLog",item.id_of_stock);
         stock_page fragment = new stock_page();
         fragment.setArguments(bundle);
         navController.navigate(R.id.action_stock_search_to_stock_page, bundle);

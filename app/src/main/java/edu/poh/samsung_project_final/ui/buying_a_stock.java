@@ -28,6 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.EmptyStackException;
+
 import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
 import edu.poh.samsung_project_final.databinding.FragmentBuyingAStockBinding;
@@ -55,7 +57,7 @@ public class buying_a_stock extends Fragment {
         return binding.getRoot();
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void setStockAndCost(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
         JSONObject obj = jsonObject.getJSONObject("securities");
@@ -63,13 +65,20 @@ public class buying_a_stock extends Fragment {
         JSONArray data_next = data.getJSONArray(0);
         name_of_stock = data_next.getString(9);
         Double cost_d = data_next.optDouble(3);
-        cost_of_stock = cost_d.toString();
+        if(cost_d < 1.0){
+            cost_of_stock = String.format("%.3f",cost_d);
+        }
+        else if (cost_d < 10.0){
+            cost_of_stock = String.format("%.2f",cost_d);
+        }
+        else{
+            cost_of_stock = String.format("%.1f",cost_d);
+        }
         binding.stockSBuyingName.setText(name_of_stock);
         binding.stockSBuyingCost.setText(cost_of_stock + " руб");
     }
 
     private void parseStockDataCost(String sid) {
-        Log.d("MyLog",sid);
         String url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/"+sid+".json";
         RequestQueue queque = Volley.newRequestQueue(requireContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -109,15 +118,21 @@ public class buying_a_stock extends Fragment {
                     if (symbol == '0' || symbol == '.' || symbol == ','){
                         throw new NumberFormatException();
                     }
-                    Log.d("MyLog",id_of_stock +"  " + Integer.parseInt(count));
-                    stockDataViewModel.insertStock(new StockEntity(id_of_stock,Integer.parseInt(count)));
+                    int count_int = Integer.parseInt(count);
+                    if (count_int > 99){
+                        throw new EmptyStackException();
+                    }
+                    Log.d("MyLog",id_of_stock +"  " + count_int);
+                    stockDataViewModel.insertStock(new StockEntity(id_of_stock,Integer.parseInt(count),name_of_stock));
                     navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
                 } catch (NumberFormatException e) {
                     Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
                 }
                 catch (StringIndexOutOfBoundsException exception){
                     Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ничего не ввели", Toast.LENGTH_SHORT).show();
-
+                }
+                catch (EmptyStackException except){
+                    Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ввели слишком большое число", Toast.LENGTH_SHORT).show();
                 }
 
             }

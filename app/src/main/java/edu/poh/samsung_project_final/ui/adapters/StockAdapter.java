@@ -32,7 +32,6 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
     @Override
     public void onBindViewHolder(@NonNull StockHolder holder, int position) {
         holder.bind(getItem(position),listener);
-
     }
 
     static class StockHolder extends RecyclerView.ViewHolder {
@@ -72,6 +71,5 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
     public interface Listener{
         void onClickNow(stockSearchModel item);
     }
-
 
 }

@@ -8,12 +8,14 @@ import androidx.room.PrimaryKey;
 public class StockEntity {
     @NonNull @PrimaryKey
     public String id_of_stock;
+    public String name_of_stock;
     public int quantity_of_stock_ent;
 
     public StockEntity(){}
 
-    public StockEntity(String id_of_stock, int quantity_of_stock_ent){
+    public StockEntity(String id_of_stock, int quantity_of_stock_ent, String name_of_stock){
         this.id_of_stock = id_of_stock;
         this.quantity_of_stock_ent = quantity_of_stock_ent;
+        this.name_of_stock = name_of_stock;
     }
 }

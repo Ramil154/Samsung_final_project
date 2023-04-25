@@ -23,4 +23,6 @@
     <color name="Yellow_100">#FFC000</color>
     <color name="Yellow_200">#FFCD33</color>
     <color name="Yellow_300">#FFD966</color>
+
+    <color name="green">#07D434</color>
 </resources>

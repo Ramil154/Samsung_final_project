@@ -21,12 +21,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="10dp"
             android:src="@drawable/ic_baseline_delete_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cost_of_stock_which_is_here_favourites"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -35,11 +34,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Нижнекамскнефтехим"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,14 +44,29 @@
             android:id="@+id/cost_of_stock_which_is_here_favourites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="35dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
-            android:text="234.6 руб"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/which_stock_is_here_favourites" />
+
+        <TextView
+            android:id="@+id/procent_of_stock_which_is_here_favourites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:text="+ 10,8 %"
+            android:textColor="@color/green"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cost_of_stock_which_is_here_favourites"
+            app:layout_constraintTop_toBottomOf="@+id/which_stock_is_here_favourites" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

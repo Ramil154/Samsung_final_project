@@ -73,7 +73,7 @@ public class stock_page extends Fragment{
 
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void setStockAndCost(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
         JSONObject obj = jsonObject.getJSONObject("securities");
@@ -81,9 +81,18 @@ public class stock_page extends Fragment{
         JSONArray data_next = data.getJSONArray(0);
         String name = data_next.getString(9);
         Double cost_d = data_next.optDouble(3);
-        String cost_str = cost_d.toString();
+        String cost;
+        if(cost_d < 1.0){
+            cost = String.format("%.3f",cost_d);
+        }
+        else if (cost_d < 10.0){
+            cost = String.format("%.2f",cost_d);
+        }
+        else{
+            cost = String.format("%.1f",cost_d);
+        }
         binding.stockSPageName.setText(name);
-        binding.stockSPageCost.setText(cost_str + " руб");
+        binding.stockSPageCost.setText(cost + " руб");
     }
 
     private void parseStockDataCost(String sid) {
