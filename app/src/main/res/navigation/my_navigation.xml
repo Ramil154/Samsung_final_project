@@ -41,7 +41,14 @@
         android:id="@+id/enter"
         android:name="edu.poh.samsung_project_final.ui.enter"
         android:label="fragment_enter"
-        tools:layout="@layout/fragment_enter" />
+        tools:layout="@layout/fragment_enter" >
+        <action
+            android:id="@+id/action_enter_to_main_list_of_app"
+            app:destination="@id/main_list_of_app" />
+        <action
+            android:id="@+id/action_enter_to_registration"
+            app:destination="@id/registration" />
+    </fragment>
     <fragment
         android:id="@+id/favourites_of_character"
         android:name="edu.poh.samsung_project_final.ui.favourites_of_character"
@@ -58,7 +65,11 @@
         android:id="@+id/registration"
         android:name="edu.poh.samsung_project_final.ui.registration"
         android:label="fragment_registration"
-        tools:layout="@layout/fragment_registration" />
+        tools:layout="@layout/fragment_registration" >
+        <action
+            android:id="@+id/action_registration_to_main_list_of_app"
+            app:destination="@id/main_list_of_app" />
+    </fragment>
     <fragment
         android:id="@+id/stock_page"
         android:name="edu.poh.samsung_project_final.ui.stock_page"

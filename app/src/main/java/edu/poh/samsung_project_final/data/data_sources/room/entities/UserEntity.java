@@ -9,4 +9,11 @@ public class UserEntity {
     @NonNull @PrimaryKey
     public String login;
     public String password;
+
+    public UserEntity(){}
+
+    public UserEntity(@NonNull String login, String password){
+        this.login = login;
+        this.password = password;
+    }
 }

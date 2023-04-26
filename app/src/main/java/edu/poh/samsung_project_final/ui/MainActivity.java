@@ -3,6 +3,8 @@ package edu.poh.samsung_project_final.ui;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -15,10 +17,13 @@ import android.view.View;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import edu.poh.samsung_project_final.R;
+import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
 import edu.poh.samsung_project_final.databinding.ActivityMainBinding;
+import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
 
 public class MainActivity extends AppCompatActivity {
     public ActivityMainBinding binding;
+    private UserViewModel userViewMOdel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-
+        // Hide BottomNavigationView if not main layouts
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
@@ -42,6 +47,18 @@ public class MainActivity extends AppCompatActivity {
                     binding.navView.setVisibility(View.VISIBLE);
                 } else {
                     binding.navView.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        //Check first enter or nonfirst enter
+        userViewMOdel = new ViewModelProvider(this).get(UserViewModel.class);
+
+        userViewMOdel.getUser().observe(this, new Observer<UserEntity>() {
+            @Override
+            public void onChanged(UserEntity userEntity) {
+                if (userEntity == null){
+                    navController.navigate(R.id.enter);
                 }
             }
         });

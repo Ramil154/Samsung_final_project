@@ -34,7 +34,8 @@
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:textSize="18sp"
-            android:textStyle="normal" />
+            android:textStyle="normal"
+            android:inputType="text"/>
 
         <EditText
             android:id="@+id/RegistrationPasswordMemorize"
@@ -47,6 +48,7 @@
             android:gravity="center"
             android:textSize="18sp"
             android:textStyle="normal"
+            android:inputType="textPassword"
             android:layout_marginTop="24dp" />
 
         <EditText
@@ -58,6 +60,7 @@
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:gravity="center"
+            android:inputType="textPassword"
             android:textSize="18sp"
             android:textStyle="normal"
             android:layout_marginTop="24dp" />
@@ -71,7 +74,7 @@
             android:text="Зарегистрироваться"
             android:textSize="18sp"
             android:gravity="center"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textStyle="normal"
             android:textAllCaps="false"/>
     </LinearLayout>
