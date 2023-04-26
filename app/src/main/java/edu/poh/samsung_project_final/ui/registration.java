@@ -53,7 +53,7 @@ public class registration extends Fragment {
                     return;
                 }
                 String password_first = binding.RegistrationPasswordCheck.getText().toString();
-                String password_two = binding.RegistrationPasswordCheck.getText().toString();
+                String password_two = binding.RegistrationPasswordMemorize.getText().toString();
                 if (password_first.length() < 4 && password_two.length() < 4){
                     Toast.makeText(getContext(), "Минимальное число символов в поле 'Введите пароль' и 'Повторите пароль' 4", Toast.LENGTH_SHORT).show();
                     return;
