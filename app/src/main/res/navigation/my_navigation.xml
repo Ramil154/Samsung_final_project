@@ -50,6 +50,9 @@
         <action
             android:id="@+id/action_favourites_of_character_to_main_list_of_app"
             app:destination="@id/main_list_of_app" />
+        <action
+            android:id="@+id/action_favourites_of_character_to_stock_page"
+            app:destination="@id/stock_page" />
     </fragment>
     <fragment
         android:id="@+id/registration"

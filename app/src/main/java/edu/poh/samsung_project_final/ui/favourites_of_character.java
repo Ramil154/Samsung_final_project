@@ -38,10 +38,11 @@ import edu.poh.samsung_project_final.ui.adapters.StockAdapter;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 
 
-public class favourites_of_character extends Fragment {
+public class favourites_of_character extends Fragment implements FavouritesAdapter.ListenerFavourites {
     private NavHostFragment navHostFragment;
     private NavController navController;
     private FavouritesAdapter adapter;
+    final String KEY_ID = "1";
     private StockDataViewModel viewModel;
     private FragmentFavouritesOfCharacterBinding binding;
 
@@ -55,7 +56,7 @@ public class favourites_of_character extends Fragment {
         binding = FragmentFavouritesOfCharacterBinding.inflate(inflater, container, false);
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
-        adapter = new FavouritesAdapter();
+        adapter = new FavouritesAdapter(this);
         return binding.getRoot();
     }
 
@@ -87,5 +88,14 @@ public class favourites_of_character extends Fragment {
                 adapter.setList(stockEntities);
             }
         });
+    }
+
+    @Override
+    public void OnClickFavourites(StockEntity stockEntity) {
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_ID,stockEntity.id_of_stock);
+        stock_page fragment = new stock_page();
+        fragment.setArguments(bundle);
+        navController.navigate(R.id.action_favourites_of_character_to_stock_page, bundle);
     }
 }

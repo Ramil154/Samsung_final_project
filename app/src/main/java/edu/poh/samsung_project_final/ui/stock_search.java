@@ -101,14 +101,18 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
         JSONArray data = description.getJSONArray("data");
         for (int i = 0;i < data.length(); i++){
             JSONArray data_next = data.getJSONArray(i);
-            Double cost_d = data_next.optDouble(3);
+            String boardid = data_next.getString(1);
+            if (!boardid.equals("TQBR")) {
+                continue;
+            }
+            double cost_d = data_next.optDouble(3);
             if(Double.isNaN(cost_d)){}
             else{
                 String cost;
-                if(cost_d < 1.0){
+                if(cost_d < 10.0){
                     cost = String.format("%.3f",cost_d);
                 }
-                else if (cost_d < 10.0){
+                else if (cost_d < 100.0){
                     cost = String.format("%.2f",cost_d);
                 }
                 else{

@@ -45,6 +45,7 @@ public class buying_a_stock extends Fragment {
     private String name_of_stock;
     private String cost_of_stock;
     private String id_of_stock;
+    private double cost_d;
     public static buying_a_stock newInstance() {
         return null;
     }
@@ -62,20 +63,27 @@ public class buying_a_stock extends Fragment {
         JSONObject jsonObject = new JSONObject(response);
         JSONObject obj = jsonObject.getJSONObject("securities");
         JSONArray data = obj.getJSONArray("data");
-        JSONArray data_next = data.getJSONArray(0);
-        name_of_stock = data_next.getString(9);
-        Double cost_d = data_next.optDouble(3);
-        if(cost_d < 1.0){
-            cost_of_stock = String.format("%.3f",cost_d);
+        for (int i = 0; i < data.length();i++){
+            JSONArray data_next = data.getJSONArray(i);
+            String boardid = data_next.getString(1);
+            if (!boardid.equals("TQBR")){
+                continue;
+            }
+            name_of_stock = data_next.getString(9);
+            cost_d = data_next.optDouble(3);
+            if(cost_d < 10.0){
+                cost_of_stock = String.format("%.3f",cost_d);
+            }
+            else if (cost_d < 100.0){
+                cost_of_stock = String.format("%.2f",cost_d);
+            }
+            else{
+                cost_of_stock = String.format("%.1f",cost_d);
+            }
+            binding.stockSBuyingName.setText(name_of_stock);
+            binding.stockSBuyingCost.setText(cost_of_stock + " руб");
         }
-        else if (cost_d < 10.0){
-            cost_of_stock = String.format("%.2f",cost_d);
-        }
-        else{
-            cost_of_stock = String.format("%.1f",cost_d);
-        }
-        binding.stockSBuyingName.setText(name_of_stock);
-        binding.stockSBuyingCost.setText(cost_of_stock + " руб");
+
     }
 
     private void parseStockDataCost(String sid) {
@@ -122,8 +130,8 @@ public class buying_a_stock extends Fragment {
                     if (count_int > 99){
                         throw new EmptyStackException();
                     }
-                    Log.d("MyLog",id_of_stock +"  " + count_int);
-                    stockDataViewModel.insertStock(new StockEntity(id_of_stock,Integer.parseInt(count),name_of_stock));
+                    double ans = cost_d * (double) count_int;
+                    stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
                     navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
                 } catch (NumberFormatException e) {
                     Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
@@ -134,7 +142,6 @@ public class buying_a_stock extends Fragment {
                 catch (EmptyStackException except){
                     Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ввели слишком большое число", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
     }

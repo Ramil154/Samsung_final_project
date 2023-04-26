@@ -10,12 +10,13 @@ public class StockEntity {
     public String id_of_stock;
     public String name_of_stock;
     public int quantity_of_stock_ent;
-
+    public double stock_price_when_bought;
     public StockEntity(){}
 
-    public StockEntity(String id_of_stock, int quantity_of_stock_ent, String name_of_stock){
+    public StockEntity(@NonNull String id_of_stock, String name_of_stock, int quantity_of_stock_ent,double stock_price_when_bought){
         this.id_of_stock = id_of_stock;
         this.quantity_of_stock_ent = quantity_of_stock_ent;
         this.name_of_stock = name_of_stock;
+        this.stock_price_when_bought = stock_price_when_bought;
     }
 }

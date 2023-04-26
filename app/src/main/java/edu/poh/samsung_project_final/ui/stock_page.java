@@ -78,21 +78,28 @@ public class stock_page extends Fragment{
         JSONObject jsonObject = new JSONObject(response);
         JSONObject obj = jsonObject.getJSONObject("securities");
         JSONArray data = obj.getJSONArray("data");
-        JSONArray data_next = data.getJSONArray(0);
-        String name = data_next.getString(9);
-        Double cost_d = data_next.optDouble(3);
-        String cost;
-        if(cost_d < 1.0){
-            cost = String.format("%.3f",cost_d);
+        for (int i = 0;i < data.length(); i++){
+            JSONArray data_next = data.getJSONArray(i);
+            String boardid = data_next.getString(1);
+            if (!boardid.equals("TQBR")){
+                continue;
+            }
+            String name = data_next.getString(9);
+            Double cost_d = data_next.optDouble(3);
+            String cost;
+            if(cost_d < 10.0){
+                cost = String.format("%.3f",cost_d);
+            }
+            else if (cost_d < 100.0){
+                cost = String.format("%.2f",cost_d);
+            }
+            else{
+                cost = String.format("%.1f",cost_d);
+            }
+            binding.stockSPageName.setText(name);
+            binding.stockSPageCost.setText(cost + " руб");
         }
-        else if (cost_d < 10.0){
-            cost = String.format("%.2f",cost_d);
-        }
-        else{
-            cost = String.format("%.1f",cost_d);
-        }
-        binding.stockSPageName.setText(name);
-        binding.stockSPageCost.setText(cost + " руб");
+
     }
 
     private void parseStockDataCost(String sid) {

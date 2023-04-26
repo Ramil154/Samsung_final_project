@@ -1,9 +1,11 @@
 package edu.poh.samsung_project_final.ui.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -30,6 +36,7 @@ import java.util.List;
 
 import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
+import edu.poh.samsung_project_final.data.models.stockSearchModel;
 import edu.poh.samsung_project_final.data.repositories.UserRepository;
 
 public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.StockDataHolder> {
@@ -37,9 +44,15 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
     private UserRepository userRepository;
     private List<StockEntity> list = new ArrayList();
     private String id;
+    private NavController navController;
+    private NavHostFragment navHostFragment;
     //private ListItemOfFavouritesBinding binding;
     private Context context;
+    private ListenerFavourites listener;
 
+    public FavouritesAdapter(ListenerFavourites listener){
+        this.listener = listener;
+    }
     @NonNull
     @Override
     public StockDataHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,8 +69,10 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
         id = stockEntity.id_of_stock;
         String name_of_stock = stockEntity.name_of_stock;
         Integer count = stockEntity.quantity_of_stock_ent;
+        double bought_stock = stockEntity.stock_price_when_bought;
         Log.d("MyLon",id);
-        parseStockDataCost(id,holder,count);
+        parseStockDataCost(id,holder,count,bought_stock);
+        holder.quantity.setText(count+" шт.");
         if (name_of_stock.length() > 30){
             holder.name.setText(name_of_stock.substring(0,30)+"...");
         }else{
@@ -71,6 +86,12 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
                 dialog.dismiss();
             });
             builder.create().show();
+        });
+        holder.recycler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.OnClickFavourites(stockEntity);
+            }
         });
     }
 
@@ -87,11 +108,17 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
         private final TextView name;
         private final TextView cost;
         private final ImageView delete;
+        private final CardView recycler;
+        private final TextView percent;
+        private final TextView quantity;
         public StockDataHolder(@NonNull View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.which_stock_is_here_favourites);
             cost = (TextView) itemView.findViewById(R.id.cost_of_stock_which_is_here_favourites);
             delete = (ImageView) itemView.findViewById(R.id.deleteFromFavourites);
+            recycler = (CardView) itemView.findViewById(R.id.cardViewRecyclerFavourites);
+            percent = (TextView) itemView.findViewById(R.id.precent_of_stock_which_is_here_favourites);
+            quantity = (TextView) itemView.findViewById(R.id.quantity_of_stock_which_is_here_favourites);
         }
 
         @Override
@@ -99,7 +126,7 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
         }
     }
 
-    private void parseStockDataCost(String sid,StockDataHolder holder,Integer count) {
+    private void parseStockDataCost(String sid,StockDataHolder holder,Integer count,double bought_stock) {
         if (sid == null || sid.isEmpty()) {
             return;
         }
@@ -112,7 +139,7 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
                     public void onResponse(String response) {
                         try {
                             Log.d("MyLon","response");
-                            setStockAndCost(response,holder,count);
+                            setStockAndCost(response,holder,count,bought_stock);
                             Log.d("MyLon",cost_of_stock[0]);
                         } catch (JSONException e) {
                             Log.d("MyLon","Errorrrrrr");
@@ -128,23 +155,41 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
     }
 
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
-    private void setStockAndCost(String response,StockDataHolder holder,Integer count) throws JSONException {
+    private void setStockAndCost(String response,StockDataHolder holder,Integer count, double bought_stock) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
         JSONObject obj = jsonObject.getJSONObject("securities");
         JSONArray data = obj.getJSONArray("data");
-        JSONArray data_next = data.getJSONArray(0);
-        double cost_d = data_next.optDouble(3)*count;
-        String cost;
-        if(cost_d < 10.0){
-            cost = String.format("%.3f",cost_d);
+        for(int i = 0; i < data.length(); i++){
+            JSONArray data_next = data.getJSONArray(i);
+            if (!data_next.getString(1).equals("TQBR")){
+                continue;
+            }
+            Double cost_d = data_next.optDouble(3);
+            Double cost_final = cost_d*count;
+            String cost;
+            if(cost_final < 10.0){
+                cost = String.format("%.3f",cost_final);
+            }
+            else if (cost_final < 100.0){
+                cost = String.format("%.2f",cost_final);
+            }
+            else{
+                cost = String.format("%.1f",cost_final);
+            }
+            holder.cost.setText(cost+" руб");
+            double percent_of_diff = ((cost_final - bought_stock)/bought_stock) * 100.0;
+            String persent_str = String.format("%.2f",percent_of_diff);
+            if (percent_of_diff < 0){
+                holder.percent.setTextColor(Color.parseColor("#D41307"));
+                holder.percent.setText("- " + persent_str + " %");
+            }
+            else{
+                holder.percent.setTextColor(Color.parseColor("#07D434"));
+                holder.percent.setText("+ " + persent_str + " %");
+            }
+
         }
-        else if (cost_d < 100.0){
-            cost = String.format("%.2f",cost_d);
-        }
-        else{
-            cost = String.format("%.1f",cost_d);
-        }
-        holder.cost.setText(cost+" руб");
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -153,5 +198,7 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
         this.list = list;
         notifyDataSetChanged();
     }
-
+    public interface ListenerFavourites{
+        void OnClickFavourites(StockEntity stockEntity);
+    }
 }
