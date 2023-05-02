@@ -34,10 +34,13 @@ import edu.poh.samsung_project_final.data.models.stockSearchModel;
 import edu.poh.samsung_project_final.databinding.FragmentStockPageBinding;
 import edu.poh.samsung_project_final.databinding.FragmentStockSearchBinding;
 import edu.poh.samsung_project_final.ui.adapters.StockAdapter;
+import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 
 public class stock_page extends Fragment{
     private FragmentStockPageBinding binding;
     private final String KEY_ID = "1";
+    private final String CHECK = "2";
+    private final String CHECK_STRING = "true";
     private NavHostFragment navHostFragment;
     private String id;
     private NavController navController;
@@ -48,10 +51,14 @@ public class stock_page extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle args = getArguments();
         binding = FragmentStockPageBinding.inflate(inflater, container, false);
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
-        Bundle args = getArguments();
+        String check = args.getString(CHECK);
+        if(!check.equals(CHECK_STRING)){
+            binding.ButtonForChoseToDeleteStock.setVisibility(View.GONE);
+        }
         id = args.getString(KEY_ID);
         parseStockDataCost(id);
         binding.ButtonForChoseToByuingStock.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +69,16 @@ public class stock_page extends Fragment{
                 buying_a_stock fragment = new buying_a_stock();
                 fragment.setArguments(bundle);
                 navController.navigate(R.id.action_stock_page_to_buying_a_stock,bundle);
+            }
+        });
+        binding.ButtonForChoseToDeleteStock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString(KEY_ID,id);
+                DeleteStockFromFav fragment = new DeleteStockFromFav();
+                fragment.setArguments(bundle);
+                navController.navigate(R.id.action_stock_page_to_delete_stock_from_fav,bundle);
             }
         });
         return binding.getRoot();
@@ -99,7 +116,6 @@ public class stock_page extends Fragment{
             binding.stockSPageName.setText(name);
             binding.stockSPageCost.setText(cost + " руб");
         }
-
     }
 
     private void parseStockDataCost(String sid) {

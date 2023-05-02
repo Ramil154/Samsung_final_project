@@ -12,10 +12,8 @@ import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
 public interface UserDAO {
     @Insert
     void insert(UserEntity userEntity);
-
     @Delete
     void delete(UserEntity userEntity);
-
     @Query("SELECT * FROM USERTABLE")
     LiveData<UserEntity> getUser();
 }

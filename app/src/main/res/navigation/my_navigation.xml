@@ -78,5 +78,17 @@
         <action
             android:id="@+id/action_stock_page_to_buying_a_stock"
             app:destination="@id/buying_a_stock" />
+        <action
+            android:id="@+id/action_stock_page_to_delete_stock_from_fav"
+            app:destination="@id/delete_stock_from_fav" />
+    </fragment>
+    <fragment
+        android:id="@+id/delete_stock_from_fav"
+        android:name="edu.poh.samsung_project_final.ui.DeleteStockFromFav"
+        android:label="delete_stock"
+        tools:layout="@layout/delete_stock_from_fav" >
+        <action
+            android:id="@+id/action_delete_stock_from_fav_to_favourites_of_character"
+            app:destination="@id/favourites_of_character" />
     </fragment>
 </navigation>

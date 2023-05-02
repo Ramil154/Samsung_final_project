@@ -1,5 +1,7 @@
 package edu.poh.samsung_project_final.ui.adapters;
 
+import static java.lang.Math.abs;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -78,15 +80,15 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
         }else{
             holder.name.setText(name_of_stock);
         }
-        holder.delete.setOnClickListener(view -> {
-            builder.setMessage("Вы уверены, что хотите удалить эту ценную бумагу из избранных").setCancelable(false).setPositiveButton("Нет", (dialog, id) -> dialog.cancel()).setNegativeButton("Да", (dialog, id) -> {
-                list.remove(stockEntity);
-                userRepository.deleteStock(stockEntity);
-                notifyDataSetChanged();
-                dialog.dismiss();
-            });
-            builder.create().show();
-        });
+//        holder.delete.setOnClickListener(view -> {
+//            builder.setMessage("Вы уверены, что хотите удалить эту ценную бумагу из избранных").setCancelable(false).setPositiveButton("Нет", (dialog, id) -> dialog.cancel()).setNegativeButton("Да", (dialog, id) -> {
+//                list.remove(stockEntity);
+//                userRepository.deleteStock(stockEntity);
+//                notifyDataSetChanged();
+//                dialog.dismiss();
+//            });
+//            builder.create().show();
+//        });
         holder.recycler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,7 +96,6 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
             }
         });
     }
-
     @Override
     public int getItemCount() {
         return this.list.size();
@@ -106,17 +107,19 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
 
     public class StockDataHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView name;
+        private final TextView all_cost;
         private final TextView cost;
-        private final ImageView delete;
+        //private final ImageView delete;
         private final CardView recycler;
         private final TextView percent;
         private final TextView quantity;
         public StockDataHolder(@NonNull View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.which_stock_is_here_favourites);
-            cost = (TextView) itemView.findViewById(R.id.cost_of_stock_which_is_here_favourites);
-            delete = (ImageView) itemView.findViewById(R.id.deleteFromFavourites);
+            all_cost = (TextView) itemView.findViewById(R.id.all_cost_of_stock_which_is_here_favourites);
+            //delete = (ImageView) itemView.findViewById(R.id.deleteFromFavourites);
             recycler = (CardView) itemView.findViewById(R.id.cardViewRecyclerFavourites);
+            cost = (TextView) itemView.findViewById(R.id.cost_of_stock_which_is_here_favourites);
             percent = (TextView) itemView.findViewById(R.id.precent_of_stock_which_is_here_favourites);
             quantity = (TextView) itemView.findViewById(R.id.quantity_of_stock_which_is_here_favourites);
         }
@@ -165,33 +168,42 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
                 continue;
             }
             Double cost_d = data_next.optDouble(3);
-            Double cost_final = cost_d*count;
-            String cost;
-            if(cost_final < 10.0){
-                cost = String.format("%.3f",cost_final);
+            String cost_of_stock;
+            if(cost_d < 10.0){
+                cost_of_stock = String.format("%.3f",cost_d);
             }
-            else if (cost_final < 100.0){
-                cost = String.format("%.2f",cost_final);
+            else if (cost_d < 100.0){
+                cost_of_stock = String.format("%.2f",cost_d);
             }
             else{
-                cost = String.format("%.1f",cost_final);
+                cost_of_stock = String.format("%.1f",cost_d);
             }
-            holder.cost.setText(cost+" руб");
+            holder.cost.setText(cost_of_stock + " руб");
+            Double cost_final = cost_d*count;
+            String all_cost;
+            if(cost_final < 10.0){
+                all_cost = String.format("%.3f",cost_final);
+            }
+            else if (cost_final < 100.0){
+                all_cost = String.format("%.2f",cost_final);
+            }
+            else{
+                all_cost = String.format("%.1f",cost_final);
+            }
+            holder.all_cost.setText(all_cost + " руб");
             double percent_of_diff = ((cost_final - bought_stock)/bought_stock) * 100.0;
-            String persent_str = String.format("%.2f",percent_of_diff);
             if (percent_of_diff < 0){
                 holder.percent.setTextColor(Color.parseColor("#D41307"));
+                String persent_str = String.format("%.2f",abs(percent_of_diff));
                 holder.percent.setText("- " + persent_str + " %");
             }
             else{
                 holder.percent.setTextColor(Color.parseColor("#07D434"));
-                holder.percent.setText("+ " + persent_str + " %");
+                String persent_str = String.format("%.2f",percent_of_diff);
+                holder.percent.setText("+" + persent_str + " %");
             }
-
         }
-
     }
-
     @SuppressLint("NotifyDataSetChanged")
     public void setList(List<StockEntity> list){
         Log.d("MyLon",list.toString());

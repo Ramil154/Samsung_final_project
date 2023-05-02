@@ -34,6 +34,7 @@ import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
 import edu.poh.samsung_project_final.databinding.FragmentBuyingAStockBinding;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
+import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
 
 
 public class buying_a_stock extends Fragment {
@@ -42,6 +43,7 @@ public class buying_a_stock extends Fragment {
     private NavHostFragment navHostFragment;
     private NavController navController;
     private StockDataViewModel stockDataViewModel;
+    private UserViewModel userViewModel;
     private String name_of_stock;
     private String cost_of_stock;
     private String id_of_stock;
@@ -55,6 +57,9 @@ public class buying_a_stock extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentBuyingAStockBinding.inflate(inflater, container, false);
+        navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
+        navController = navHostFragment.getNavController();
+        userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         return binding.getRoot();
     }
 
@@ -112,8 +117,6 @@ public class buying_a_stock extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         buying_a_stock.super.onViewCreated(view, savedInstanceState);
         this.stockDataViewModel = new ViewModelProvider(this).get(StockDataViewModel.class);
-        navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
-        navController = navHostFragment.getNavController();
         Bundle args = getArguments();
         id_of_stock= args.getString(KEY_ID);
         parseStockDataCost(id_of_stock);
@@ -124,23 +127,24 @@ public class buying_a_stock extends Fragment {
                     String count = binding.gettingCountOfStocks.getText().toString();
                     char symbol = count.charAt(0);
                     if (symbol == '0' || symbol == '.' || symbol == ','){
-                        throw new NumberFormatException();
+                        Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
+                        return;
                     }
+
                     int count_int = Integer.parseInt(count);
-                    if (count_int > 99){
-                        throw new EmptyStackException();
-                    }
                     double ans = cost_d * (double) count_int;
-                    stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
-                    navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
-                } catch (NumberFormatException e) {
-                    Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
+                    Log.d("UserMoney",String.valueOf(userViewModel.userEntity.money));
+                    if(ans > userViewModel.userEntity.money){
+                        Toast.makeText(buying_a_stock.this.getActivity(), "Вы превысили ваш бюджет", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        userViewModel.userEntity.money = userViewModel.userEntity.money - ans;
+                        stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
+                        navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
+                    }
                 }
                 catch (StringIndexOutOfBoundsException exception){
                     Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ничего не ввели", Toast.LENGTH_SHORT).show();
-                }
-                catch (EmptyStackException except){
-                    Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ввели слишком большое число", Toast.LENGTH_SHORT).show();
                 }
             }
         });

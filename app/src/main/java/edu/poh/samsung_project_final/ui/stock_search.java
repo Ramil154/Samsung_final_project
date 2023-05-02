@@ -49,6 +49,8 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
     private FragmentStockSearchBinding binding;
     private StockAdapter adapter;
     final String KEY_ID = "1";
+    private final String CHECK = "2";
+    private final String CHECK_STRING = "false";
     private final stockSearchViewModel model = new stockSearchViewModel();
     private final StockAdapter.StockComparator stockComparator = new StockAdapter.StockComparator();
     private NavController navController;
@@ -148,6 +150,7 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
     public void onClickNow(stockSearchModel item) {
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ID,item.id_of_stock);
+        bundle.putString(CHECK,CHECK_STRING);
         stock_page fragment = new stock_page();
         fragment.setArguments(bundle);
         navController.navigate(R.id.action_stock_search_to_stock_page, bundle);

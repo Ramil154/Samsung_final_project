@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ public class registration extends Fragment {
     private NavHostFragment navHostFragment;
     private NavController navController;
     private UserViewModel userViewModel;
+    private final double MONEY = 20000;
     public static registration newInstance() {return null;}
 
     @Override
@@ -32,7 +34,7 @@ public class registration extends Fragment {
         binding = FragmentRegistrationBinding.inflate(inflater, container, false);
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         return binding.getRoot();
     }
 
@@ -63,6 +65,10 @@ public class registration extends Fragment {
                     return;
                 }
                 userViewModel.insertUser(new UserEntity(login,password_two));
+                Log.d("UserMoney",String.valueOf(userViewModel.userEntity.money));
+                Log.d("UserMoney",String.valueOf(MONEY));
+                userViewModel.userEntity.money = MONEY;
+                Log.d("UserMoney",String.valueOf(userViewModel.userEntity.money)+"fll");
                 navController.navigate(R.id.action_registration_to_main_list_of_app);
             }
         });

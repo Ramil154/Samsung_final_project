@@ -19,11 +19,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
 import edu.poh.samsung_project_final.databinding.ActivityMainBinding;
+import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
 
 public class MainActivity extends AppCompatActivity {
     public ActivityMainBinding binding;
-    private UserViewModel userViewMOdel;
+    private UserViewModel userViewModel;
+    private StockDataViewModel stockDataViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        stockDataViewModel = new ViewModelProvider(this).get(StockDataViewModel.class);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -52,9 +56,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Check first enter or nonfirst enter
-        userViewMOdel = new ViewModelProvider(this).get(UserViewModel.class);
-
-        userViewMOdel.getUser().observe(this, new Observer<UserEntity>() {
+        userViewModel.getUser().observe(this, new Observer<UserEntity>() {
             @Override
             public void onChanged(UserEntity userEntity) {
                 if (userEntity == null){

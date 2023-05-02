@@ -25,7 +25,7 @@
 
         <EditText
             android:id="@+id/RegistrationLoginMemorize"
-            android:layout_width="250dp"
+            android:layout_width="260dp"
             android:layout_height="45dp"
             android:layout_marginTop="207dp"
             android:background="@drawable/bg_rounded_edittext"
@@ -39,7 +39,7 @@
 
         <EditText
             android:id="@+id/RegistrationPasswordMemorize"
-            android:layout_width="250dp"
+            android:layout_width="260dp"
             android:layout_height="45dp"
             android:background="@drawable/bg_rounded_edittext"
             android:hint="Введите пароль"
@@ -53,7 +53,7 @@
 
         <EditText
             android:id="@+id/RegistrationPasswordCheck"
-            android:layout_width="250dp"
+            android:layout_width="260dp"
             android:layout_height="45dp"
             android:background="@drawable/bg_rounded_edittext"
             android:hint="Повторите пароль"
@@ -67,7 +67,7 @@
 
         <Button
             android:id="@+id/RegistrationCharacterMemorize"
-            android:layout_width="250dp"
+            android:layout_width="260dp"
             android:layout_height="45dp"
             android:layout_marginTop="100dp"
             android:background="@drawable/bg_background_button"

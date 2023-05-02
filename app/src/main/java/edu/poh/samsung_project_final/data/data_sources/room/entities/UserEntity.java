@@ -9,6 +9,7 @@ public class UserEntity {
     @NonNull @PrimaryKey
     public String login;
     public String password;
+    public double money;
 
     public UserEntity(){}
 

@@ -10,7 +10,7 @@ import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
 import edu.poh.samsung_project_final.data.repositories.UserRepository;
 
 public class UserViewModel extends AndroidViewModel {
-    private UserEntity userEntity;
+    public UserEntity userEntity;
     private UserRepository userRepository;
     private Application application;
     private LiveData<UserEntity> userEntityLiveData;

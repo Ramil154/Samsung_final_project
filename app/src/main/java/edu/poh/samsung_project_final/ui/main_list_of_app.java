@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +32,6 @@ public class main_list_of_app extends Fragment {
     private NavHostFragment navHostFragment;
     private UserViewModel userViewModel;
     private NavController navController;
-    private StockDataViewModel stockDataViewModel;
-    private Double all_cost_stock;
     public static main_list_of_app newInstance() {return null;}
 
 
@@ -43,7 +42,6 @@ public class main_list_of_app extends Fragment {
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
         userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        stockDataViewModel = new ViewModelProvider(getActivity()).get(StockDataViewModel.class);
         return binding.getRoot();
     }
 
@@ -51,8 +49,7 @@ public class main_list_of_app extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
+        Log.d("UserMoney",String.valueOf(userViewModel.userEntity.money));
         userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
             @SuppressLint("SetTextI18n")
             public void onChanged(UserEntity userEntity) {
@@ -61,8 +58,8 @@ public class main_list_of_app extends Fragment {
                 }
                 else{
                     binding.userProfileMain.setText("Здравствуйте, " + userEntity.login);
+                    binding.sumOfStocks.setText(userViewModel.userEntity.money + " руб");
                 }
-
             }
         });
 

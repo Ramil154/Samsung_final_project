@@ -35,7 +35,7 @@
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             android:backgroundTint="@color/Black_500"
-            app:layout_constraintTop_toBottomOf="@+id/cardViewStockBuying">
+            app:layout_constraintTop_toBottomOf="@+id/cardViewStockDelete">
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -56,7 +56,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
-                    android:id="@+id/gettingCountOfStocks"
+                    android:id="@+id/gettingCountOfStocksToDelete"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="20dp"
@@ -74,7 +74,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardViewStockBuying"
+            android:id="@+id/cardViewStockDelete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/Black_500"
@@ -91,7 +91,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/stockS_buying_name"
+                    android:id="@+id/stocks_delete_name"
                     android:layout_width="260dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -105,7 +105,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/stockS_buying_cost"
+                    android:id="@+id/stocks_delete_cost"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
