@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.EmptyStackException;
+import java.util.List;
 
 import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
@@ -143,10 +144,26 @@ public class buying_a_stock extends Fragment {
                             }
                             else{
                                 double balance = userEntity.money - ans;
-                                stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
-                                userViewModel.updateUser(new UserEntity(userEntity.login,userEntity.password,balance));
-                                Log.d("UserMoney",String.valueOf(userEntity.money)+"ans");
-                                navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
+                                stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
+                                    @Override
+                                    public void onChanged(List<StockEntity> stockEntities) {
+                                        if (stockEntities.isEmpty()){
+                                            stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
+                                        }
+                                        for (int i = 0; i < stockEntities.size(); i++){
+                                            StockEntity stock = stockEntities.get(i);
+                                            if(stock.id_of_stock.equals(id_of_stock)){
+                                                stockDataViewModel.updateStock(new StockEntity(id_of_stock,name_of_stock,stock.quantity_of_stock_ent+count_int,stock.stock_price_when_bought+ans));
+                                            }
+                                            else{
+                                                stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
+                                            }
+                                        }
+                                        userViewModel.updateUser(new UserEntity(userEntity.login,userEntity.password,balance));
+                                        Log.d("UserMoney",String.valueOf(userEntity.money)+"ans");
+                                        navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
+                                    }
+                                });
                             }
                         }
                     });

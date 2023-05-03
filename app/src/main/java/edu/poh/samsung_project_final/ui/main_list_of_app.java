@@ -50,14 +50,14 @@ public class main_list_of_app extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
-            @SuppressLint("SetTextI18n")
+            @SuppressLint({"SetTextI18n", "DefaultLocale"})
             public void onChanged(UserEntity userEntity) {
                 if(userEntity == null){
                     binding.userProfileMain.setText("Здравствуйте, ");
                 }
                 else{
                     binding.userProfileMain.setText("Здравствуйте, " + userEntity.login);
-                    binding.sumOfStocks.setText(userEntity.money + " руб");
+                    binding.sumOfStocks.setText(String.format("%.2f",userEntity.money) + " руб");
                     Log.d("UserMoney",String.valueOf(userEntity.money)+" main");
                 }
             }

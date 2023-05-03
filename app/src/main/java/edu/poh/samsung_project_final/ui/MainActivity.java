@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(UserEntity userEntity) {
                 if (userEntity == null){
+                    navController.popBackStack(R.id.my_navigation,true);
                     navController.navigate(R.id.enter);
                 }
             }

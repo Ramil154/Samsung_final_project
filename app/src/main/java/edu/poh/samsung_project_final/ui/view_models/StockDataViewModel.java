@@ -34,6 +34,9 @@ public class StockDataViewModel extends AndroidViewModel {
     public void deleteStock(StockEntity stockEntity){
         userRepository.deleteStock(stockEntity);
     }
+    public void updateStock(StockEntity stockEntity){
+        userRepository.updateStock(stockEntity);
+    }
 
 
 }

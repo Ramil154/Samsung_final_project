@@ -184,7 +184,7 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
             if(cost_final < 10.0){
                 all_cost = String.format("%.3f",cost_final);
             }
-            else if (cost_final < 100.0){
+            else if (cost_final < 1000.0){
                 all_cost = String.format("%.2f",cost_final);
             }
             else{

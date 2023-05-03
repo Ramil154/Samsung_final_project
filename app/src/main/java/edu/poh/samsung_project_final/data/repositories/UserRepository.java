@@ -42,6 +42,9 @@ public class UserRepository {
     public void deleteStock(StockEntity stockEntity){
         UserDatabase.databaseWriteExecutor.execute(() -> stockDAO.delete(stockEntity));
     }
+    public void updateStock(StockEntity stockEntity){
+        UserDatabase.databaseWriteExecutor.execute(() -> stockDAO.update(stockEntity));
+    }
     public LiveData<List<StockEntity>> getIdOfStock(){
         return stockEntityLiveData;
     }
