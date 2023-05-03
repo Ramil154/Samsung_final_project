@@ -24,26 +24,38 @@ public class UserRepository {
         userEntityLiveData = userDAO.getUser();
         stockEntityLiveData = stockDAO.getIdOfStock();
     }
+    //User
     public void insertUser(UserEntity userEntity){
         UserDatabase.databaseWriteExecutor.execute(() -> userDAO.insert(userEntity));
     }
     public void deleteUser(UserEntity userEntity){
         UserDatabase.databaseWriteExecutor.execute(() -> userDAO.delete(userEntity));
     }
-    public void updateUser(UserEntity userEntity){
-        UserDatabase.databaseWriteExecutor.execute(() -> userDAO.update(userEntity));
+    public void updateMoney(double money){
+        UserDatabase.databaseWriteExecutor.execute(() -> userDAO.updateMoney(money));
+    }
+    public double getMoney(){
+        return userDAO.getMoney();
     }
     public LiveData<UserEntity> getUser(){
         return userEntityLiveData;
     }
+
+    //Stocks
     public void insertStock(StockEntity stockEntity){
         UserDatabase.databaseWriteExecutor.execute(() -> stockDAO.insert(stockEntity));
     }
     public void deleteStock(StockEntity stockEntity){
         UserDatabase.databaseWriteExecutor.execute(() -> stockDAO.delete(stockEntity));
     }
-    public void updateStock(StockEntity stockEntity){
-        UserDatabase.databaseWriteExecutor.execute(() -> stockDAO.update(stockEntity));
+    public void deleteById(String id_of_stock){
+        UserDatabase.databaseWriteExecutor.execute(() -> stockDAO.deleteById(id_of_stock));
+    }
+    public void updateById(String id,Integer quantity,double price){
+        UserDatabase.databaseWriteExecutor.execute(() -> stockDAO.updateById(id,quantity,price));
+    }
+    public double getPriceById(String id){
+        return stockDAO.getPriceById(id);
     }
     public LiveData<List<StockEntity>> getIdOfStock(){
         return stockEntityLiveData;

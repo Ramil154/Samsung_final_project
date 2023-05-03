@@ -9,7 +9,7 @@ public class StockEntity {
     @NonNull @PrimaryKey
     public String id_of_stock;
     public String name_of_stock;
-    public int quantity_of_stock_ent;
+    public Integer quantity_of_stock_ent;
     public double stock_price_when_bought;
     public StockEntity(){}
 

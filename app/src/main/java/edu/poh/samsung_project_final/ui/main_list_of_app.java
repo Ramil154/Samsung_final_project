@@ -63,23 +63,6 @@ public class main_list_of_app extends Fragment {
             }
         });
 
-//        stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(),new Observer<List<StockEntity>>() {
-//            @SuppressLint("SetTextI18n")
-//            public void onChanged(List<StockEntity> stockEntities) {
-//                if (stockEntities.isEmpty()){
-//                    binding.sumOfStocks.setText("0 руб");
-//                }
-//                else{
-//                    for(int i = 0;i < stockEntities.size(); i++){
-//                        StockEntity this_stock_entity = stockEntities.get(i);
-//                        all_cost_stock += this_stock_entity.stock_price_when_bought;
-//
-//                    }
-//                    binding.sumOfStocks.setText(all_cost_stock + " руб");
-//                }
-//
-//            }
-//        });
 
         binding.GoToFavouritesFromMainByTextView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -6,10 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -25,7 +27,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import edu.poh.samsung_project_final.R;
+import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
+import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
 import edu.poh.samsung_project_final.databinding.DeleteStockFromFavBinding;
 import edu.poh.samsung_project_final.databinding.FragmentBuyingAStockBinding;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
@@ -39,8 +45,10 @@ public class DeleteStockFromFav extends Fragment {
     private StockDataViewModel stockDataViewModel;
     private String id_of_stock;
     private final String KEY_ID = "1";
+    private final String COUNT_ID = "3";
     private String name_of_stock;
     private String cost_of_stock;
+    private String quantity;
     private double cost_d;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -58,9 +66,44 @@ public class DeleteStockFromFav extends Fragment {
         this.stockDataViewModel = new ViewModelProvider(this).get(StockDataViewModel.class);
         Bundle args = getArguments();
         id_of_stock = args.getString(KEY_ID);
+        quantity = args.getString(COUNT_ID);
+        int count_of_fav = Integer.parseInt(quantity);
         parseStockDataCost(id_of_stock);
+        binding.DeleteGoToFavourites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    String count = binding.gettingCountOfStocksToDelete.getText().toString();
+                    char symbol = count.charAt(0);
+                    if (symbol == '0' || symbol == '.' || symbol == ','){
+                        Toast.makeText(DeleteStockFromFav.this.getActivity(), "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    int count_int = Integer.parseInt(count);
+                    double ans = cost_d * (double) count_int;
+                    if (count_int > count_of_fav){
+                        Toast.makeText(DeleteStockFromFav.this.getActivity(), "Вы указали количество акций большее, чем у вас в избранных", Toast.LENGTH_SHORT).show();
+                    }
+                    else if(count_int == count_of_fav){
+                        stockDataViewModel.deleteById(id_of_stock);
+                        updateUserMoneyNow(ans);
+                    }
+                    else{
+                        double price = stockDataViewModel.getPriceById(id_of_stock);
+                        stockDataViewModel.updateById(id_of_stock,(count_of_fav - count_int),price - ans);
+                        updateUserMoneyNow(ans);
+                    }
+                }
+                catch (StringIndexOutOfBoundsException exception){
+                    Toast.makeText(DeleteStockFromFav.this.getActivity(), "В поле «Введите количество акций, которые хотите удалить из избранных» вы ничего не ввели", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
-
+    private void updateUserMoneyNow(double ans){
+        userViewModel.updateMoney(ans + userViewModel.getMoney());
+        navController.navigate(R.id.action_delete_stock_from_fav_to_favourites_of_character);
+    }
     private void parseStockDataCost(String sid) {
         String url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/"+sid+".json";
         RequestQueue queque = Volley.newRequestQueue(requireContext());

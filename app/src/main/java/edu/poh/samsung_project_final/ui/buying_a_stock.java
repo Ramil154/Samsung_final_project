@@ -136,37 +136,33 @@ public class buying_a_stock extends Fragment {
 
                     int count_int = Integer.parseInt(count);
                     double ans = cost_d * (double) count_int;
-                    userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
-                        @Override
-                        public void onChanged(UserEntity userEntity) {
-                            if(ans > userEntity.money){
-                                Toast.makeText(buying_a_stock.this.getActivity(), "Вы превысили ваш бюджет", Toast.LENGTH_SHORT).show();
-                            }
-                            else{
-                                double balance = userEntity.money - ans;
-                                stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
-                                    @Override
-                                    public void onChanged(List<StockEntity> stockEntities) {
-                                        if (stockEntities.isEmpty()){
-                                            stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
-                                        }
-                                        for (int i = 0; i < stockEntities.size(); i++){
-                                            StockEntity stock = stockEntities.get(i);
-                                            if(stock.id_of_stock.equals(id_of_stock)){
-                                                stockDataViewModel.updateStock(new StockEntity(id_of_stock,name_of_stock,stock.quantity_of_stock_ent+count_int,stock.stock_price_when_bought+ans));
-                                            }
-                                            else{
-                                                stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
-                                            }
-                                        }
-                                        userViewModel.updateUser(new UserEntity(userEntity.login,userEntity.password,balance));
-                                        Log.d("UserMoney",String.valueOf(userEntity.money)+"ans");
-                                        navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
+                    double money = userViewModel.getMoney();
+                    if(ans > money){
+                        Toast.makeText(buying_a_stock.this.getActivity(), "Вы превысили ваш бюджет", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        double balance = money - ans;
+                        stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
+                            @Override
+                            public void onChanged(List<StockEntity> stockEntities) {
+                                if (stockEntities.isEmpty()){
+                                    stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
+                                }
+                                for (int i = 0; i < stockEntities.size(); i++){
+                                    StockEntity stock = stockEntities.get(i);
+                                    if(stock.id_of_stock.equals(id_of_stock)){
+                                        stockDataViewModel.updateById(id_of_stock,stock.quantity_of_stock_ent+count_int,stock.stock_price_when_bought+ans);
                                     }
-                                });
+                                    else{
+                                        stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
+                                    }
+                                }
+                                userViewModel.updateMoney(balance);
+                                Log.d("UserMoney",String.valueOf(money)+"ans");
+                                navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
                             }
-                        }
-                    });
+                        });
+                    }
                 }
                 catch (StringIndexOutOfBoundsException exception){
                     Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ничего не ввели", Toast.LENGTH_SHORT).show();

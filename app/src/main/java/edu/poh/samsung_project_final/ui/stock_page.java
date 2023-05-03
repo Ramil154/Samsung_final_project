@@ -40,6 +40,7 @@ public class stock_page extends Fragment{
     private FragmentStockPageBinding binding;
     private final String KEY_ID = "1";
     private final String CHECK = "2";
+    private final String COUNT_ID = "3";
     private final String CHECK_STRING = "true";
     private NavHostFragment navHostFragment;
     private String id;
@@ -56,6 +57,7 @@ public class stock_page extends Fragment{
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
         String check = args.getString(CHECK);
+        String quantity = args.getString(COUNT_ID);
         if(!check.equals(CHECK_STRING)){
             binding.ButtonForChoseToDeleteStock.setVisibility(View.GONE);
         }
@@ -76,6 +78,7 @@ public class stock_page extends Fragment{
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString(KEY_ID,id);
+                bundle.putString(COUNT_ID,quantity);
                 DeleteStockFromFav fragment = new DeleteStockFromFav();
                 fragment.setArguments(bundle);
                 navController.navigate(R.id.action_stock_page_to_delete_stock_from_fav,bundle);

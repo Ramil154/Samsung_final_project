@@ -44,6 +44,7 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
     private FavouritesAdapter adapter;
     private final String KEY_ID = "1";
     private final String CHECK = "2";
+    private final String COUNT_ID = "3";
     private final String CHECK_STRING = "true";
     private StockDataViewModel viewModel;
     private FragmentFavouritesOfCharacterBinding binding;
@@ -97,6 +98,7 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ID,stockEntity.id_of_stock);
         bundle.putString(CHECK,CHECK_STRING);
+        bundle.putString(COUNT_ID, String.valueOf(stockEntity.quantity_of_stock_ent));
         stock_page fragment = new stock_page();
         fragment.setArguments(bundle);
         navController.navigate(R.id.action_favourites_of_character_to_stock_page, bundle);

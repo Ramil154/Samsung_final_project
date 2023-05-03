@@ -30,7 +30,7 @@ public abstract class UserDatabase extends RoomDatabase {
             synchronized (UserDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    UserDatabase.class, "app_database")
+                                    UserDatabase.class, "app_database").allowMainThreadQueries()
                             .build();
                 }
             }

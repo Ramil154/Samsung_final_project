@@ -4,9 +4,7 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 
-import java.io.Closeable;
 import java.util.List;
 
 import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
@@ -34,9 +32,14 @@ public class StockDataViewModel extends AndroidViewModel {
     public void deleteStock(StockEntity stockEntity){
         userRepository.deleteStock(stockEntity);
     }
-    public void updateStock(StockEntity stockEntity){
-        userRepository.updateStock(stockEntity);
+    public void deleteById(String id_of_stock){
+        userRepository.deleteById(id_of_stock);
     }
-
+    public void updateById(String id,Integer quantity,double price){
+        userRepository.updateById(id,quantity,price);
+    }
+    public double getPriceById(String id){
+        return userRepository.getPriceById(id);
+    }
 
 }

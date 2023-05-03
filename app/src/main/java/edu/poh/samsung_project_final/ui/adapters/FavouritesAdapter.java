@@ -48,7 +48,6 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
     private String id;
     private NavController navController;
     private NavHostFragment navHostFragment;
-    //private ListItemOfFavouritesBinding binding;
     private Context context;
     private ListenerFavourites listener;
 
@@ -80,15 +79,6 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
         }else{
             holder.name.setText(name_of_stock);
         }
-//        holder.delete.setOnClickListener(view -> {
-//            builder.setMessage("Вы уверены, что хотите удалить эту ценную бумагу из избранных").setCancelable(false).setPositiveButton("Нет", (dialog, id) -> dialog.cancel()).setNegativeButton("Да", (dialog, id) -> {
-//                list.remove(stockEntity);
-//                userRepository.deleteStock(stockEntity);
-//                notifyDataSetChanged();
-//                dialog.dismiss();
-//            });
-//            builder.create().show();
-//        });
         holder.recycler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,7 +99,6 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
         private final TextView name;
         private final TextView all_cost;
         private final TextView cost;
-        //private final ImageView delete;
         private final CardView recycler;
         private final TextView percent;
         private final TextView quantity;
@@ -117,7 +106,6 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.which_stock_is_here_favourites);
             all_cost = (TextView) itemView.findViewById(R.id.all_cost_of_stock_which_is_here_favourites);
-            //delete = (ImageView) itemView.findViewById(R.id.deleteFromFavourites);
             recycler = (CardView) itemView.findViewById(R.id.cardViewRecyclerFavourites);
             cost = (TextView) itemView.findViewById(R.id.cost_of_stock_which_is_here_favourites);
             percent = (TextView) itemView.findViewById(R.id.precent_of_stock_which_is_here_favourites);
