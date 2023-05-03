@@ -6,7 +6,9 @@ import androidx.room.PrimaryKey;
 
 @Entity (tableName = "favouritesStocks")
 public class StockEntity {
-    @NonNull @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+    @NonNull
     public String id_of_stock;
     public String name_of_stock;
     public int quantity_of_stock_ent;

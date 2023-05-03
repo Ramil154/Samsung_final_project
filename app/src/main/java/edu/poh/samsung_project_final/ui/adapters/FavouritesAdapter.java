@@ -200,7 +200,7 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
             else{
                 holder.percent.setTextColor(Color.parseColor("#07D434"));
                 String persent_str = String.format("%.2f",percent_of_diff);
-                holder.percent.setText("+" + persent_str + " %");
+                holder.percent.setText("+ " + persent_str + " %");
             }
         }
     }

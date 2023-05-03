@@ -30,6 +30,9 @@ public class UserRepository {
     public void deleteUser(UserEntity userEntity){
         UserDatabase.databaseWriteExecutor.execute(() -> userDAO.delete(userEntity));
     }
+    public void updateUser(UserEntity userEntity){
+        UserDatabase.databaseWriteExecutor.execute(() -> userDAO.update(userEntity));
+    }
     public LiveData<UserEntity> getUser(){
         return userEntityLiveData;
     }

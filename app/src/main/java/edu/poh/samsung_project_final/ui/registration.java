@@ -64,11 +64,7 @@ public class registration extends Fragment {
                     Toast.makeText(getContext(), "Ваши пароли не совпадают!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                userViewModel.insertUser(new UserEntity(login,password_two));
-                Log.d("UserMoney",String.valueOf(userViewModel.userEntity.money));
-                Log.d("UserMoney",String.valueOf(MONEY));
-                userViewModel.userEntity.money = MONEY;
-                Log.d("UserMoney",String.valueOf(userViewModel.userEntity.money)+"fll");
+                userViewModel.insertUser(new UserEntity(login,password_two,MONEY));
                 navController.navigate(R.id.action_registration_to_main_list_of_app);
             }
         });

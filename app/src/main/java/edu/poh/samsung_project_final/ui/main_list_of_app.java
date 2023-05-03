@@ -49,7 +49,6 @@ public class main_list_of_app extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("UserMoney",String.valueOf(userViewModel.userEntity.money));
         userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
             @SuppressLint("SetTextI18n")
             public void onChanged(UserEntity userEntity) {
@@ -58,7 +57,8 @@ public class main_list_of_app extends Fragment {
                 }
                 else{
                     binding.userProfileMain.setText("Здравствуйте, " + userEntity.login);
-                    binding.sumOfStocks.setText(userViewModel.userEntity.money + " руб");
+                    binding.sumOfStocks.setText(userEntity.money + " руб");
+                    Log.d("UserMoney",String.valueOf(userEntity.money)+" main");
                 }
             }
         });

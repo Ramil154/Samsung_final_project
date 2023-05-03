@@ -32,4 +32,8 @@ public class UserViewModel extends AndroidViewModel {
     public void deleteUser(UserEntity userEntity){
         userRepository.deleteUser(userEntity);
     }
+
+    public void updateUser(UserEntity userEntity){
+        userRepository.updateUser(userEntity);
+    }
 }
