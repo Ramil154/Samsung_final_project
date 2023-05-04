@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DiffUtil;
@@ -40,16 +42,17 @@ import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
 import edu.poh.samsung_project_final.data.models.stockSearchModel;
 import edu.poh.samsung_project_final.data.repositories.UserRepository;
+import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
 
 public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.StockDataHolder> {
-    private AlertDialog.Builder builder;
-    private UserRepository userRepository;
     private List<StockEntity> list = new ArrayList();
     private String id;
-    private NavController navController;
-    private NavHostFragment navHostFragment;
     private Context context;
+    private Activity activity;
     private ListenerFavourites listener;
+    private double balanse;
+    private static final int VIEW_TYPE_FIRST_ITEM = 0;
+    private static final int VIEW_TYPE_ITEM = 1;
 
     public FavouritesAdapter(ListenerFavourites listener){
         this.listener = listener;
@@ -57,42 +60,63 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
     @NonNull
     @Override
     public StockDataHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_of_favourites,parent,false);
-        builder = new AlertDialog.Builder(parent.getContext());
-        userRepository = new UserRepository((Application) parent.getContext().getApplicationContext());
+        View itemView;
+        if (viewType == VIEW_TYPE_FIRST_ITEM) {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_for_balance_in_rub, parent, false);
+        } else {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_of_favourites, parent, false);
+        }
         return new StockDataHolder(itemView);
     }
 
-    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
+    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged", "DefaultLocale"})
     @Override
     public void onBindViewHolder(StockDataHolder holder, int position) {
-        StockEntity stockEntity = this.list.get(position);
-        id = stockEntity.id_of_stock;
-        String name_of_stock = stockEntity.name_of_stock;
-        Integer count = stockEntity.quantity_of_stock_ent;
-        double bought_stock = stockEntity.stock_price_when_bought;
-        Log.d("MyLon",id);
-        parseStockDataCost(id,holder,count,bought_stock);
-        holder.quantity.setText(count+" шт.");
-        if (name_of_stock.length() > 30){
-            holder.name.setText(name_of_stock.substring(0,30)+"...");
-        }else{
-            holder.name.setText(name_of_stock);
+        if(position == 0){
+            holder.balance.setText(String.format("%.2f",balanse) + " руб");
         }
-        holder.recycler.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.OnClickFavourites(stockEntity);
+        else {
+            StockEntity stockEntity = this.list.get(position - 1);
+            id = stockEntity.id_of_stock;
+            String name_of_stock = stockEntity.name_of_stock;
+            Integer count = stockEntity.quantity_of_stock_ent;
+            double bought_stock = stockEntity.stock_price_when_bought;
+            Log.d("MyLon", id);
+            parseStockDataCost(id, holder, count, bought_stock);
+            holder.quantity.setText(count + " шт.");
+            if (name_of_stock.length() > 30) {
+                holder.name.setText(name_of_stock.substring(0, 30) + "...");
+            } else {
+                holder.name.setText(name_of_stock);
             }
-        });
+            holder.recycler.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.OnClickFavourites(stockEntity);
+                }
+            });
+        }
     }
     @Override
     public int getItemCount() {
-        return this.list.size();
+        return this.list.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return VIEW_TYPE_FIRST_ITEM;
+        } else {
+            return VIEW_TYPE_ITEM;
+        }
     }
 
     public void setContext (Context context){
         this.context = context;
+    }
+
+    public void setBalance(double balance){
+        this.balanse = balance;
     }
 
     public class StockDataHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -102,6 +126,7 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
         private final CardView recycler;
         private final TextView percent;
         private final TextView quantity;
+        private final TextView balance;
         public StockDataHolder(@NonNull View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.which_stock_is_here_favourites);
@@ -110,6 +135,7 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
             cost = (TextView) itemView.findViewById(R.id.cost_of_stock_which_is_here_favourites);
             percent = (TextView) itemView.findViewById(R.id.precent_of_stock_which_is_here_favourites);
             quantity = (TextView) itemView.findViewById(R.id.quantity_of_stock_which_is_here_favourites);
+            balance = (TextView) itemView.findViewById(R.id.balance_of_user);
         }
 
         @Override
@@ -121,7 +147,6 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
         if (sid == null || sid.isEmpty()) {
             return;
         }
-        final String[] cost_of_stock = {""};
         String url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/"+sid+".json";
         RequestQueue queue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -129,9 +154,7 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d("MyLon","response");
                             setStockAndCost(response,holder,count,bought_stock);
-                            Log.d("MyLon",cost_of_stock[0]);
                         } catch (JSONException e) {
                             Log.d("MyLon","Errorrrrrr");
                         }
@@ -180,7 +203,7 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
             }
             holder.all_cost.setText(all_cost + " руб");
             double percent_of_diff = ((cost_final - bought_stock)/bought_stock) * 100.0;
-            if (percent_of_diff < 0){
+            if (percent_of_diff < 0.0){
                 holder.percent.setTextColor(Color.parseColor("#D41307"));
                 String persent_str = String.format("%.2f",abs(percent_of_diff));
                 holder.percent.setText("- " + persent_str + " %");

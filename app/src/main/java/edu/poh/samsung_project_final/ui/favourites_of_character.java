@@ -36,6 +36,7 @@ import edu.poh.samsung_project_final.databinding.FragmentFavouritesOfCharacterBi
 import edu.poh.samsung_project_final.ui.adapters.FavouritesAdapter;
 import edu.poh.samsung_project_final.ui.adapters.StockAdapter;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
+import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
 
 
 public class favourites_of_character extends Fragment implements FavouritesAdapter.ListenerFavourites {
@@ -48,6 +49,8 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
     private final String CHECK_STRING = "true";
     private StockDataViewModel viewModel;
     private FragmentFavouritesOfCharacterBinding binding;
+    private UserViewModel userViewModel;
+    private double balance;
 
     public static favourites_of_character newInstance() { return null;
     }
@@ -60,6 +63,8 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
         adapter = new FavouritesAdapter(this);
+        userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        balance = userViewModel.getMoney();
         return binding.getRoot();
     }
 
@@ -87,6 +92,7 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
         viewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
             @SuppressLint("SetTextI18n")
             public void onChanged(List<StockEntity> stockEntities) {
+                adapter.setBalance(balance);
                 adapter.setContext(getContext());
                 adapter.setList(stockEntities);
             }

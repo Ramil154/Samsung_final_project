@@ -67,6 +67,7 @@ public class DeleteStockFromFav extends Fragment {
         Bundle args = getArguments();
         id_of_stock = args.getString(KEY_ID);
         quantity = args.getString(COUNT_ID);
+        binding.gettingCountOfStocksToDelete.setHint("Количество акций: " + quantity);
         int count_of_fav = Integer.parseInt(quantity);
         parseStockDataCost(id_of_stock);
         binding.DeleteGoToFavourites.setOnClickListener(new View.OnClickListener() {

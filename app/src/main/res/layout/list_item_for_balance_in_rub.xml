@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:layout_marginTop="8dp"
+    android:backgroundTint="@color/Black_500"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/rubles"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Рубль"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/balance_of_user"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:gravity="end"
+            android:maxLines="1"
+            android:text="1216.05 руб"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

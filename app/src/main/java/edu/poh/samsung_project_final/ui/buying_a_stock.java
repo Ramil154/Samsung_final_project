@@ -145,18 +145,19 @@ public class buying_a_stock extends Fragment {
                         stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
                             @Override
                             public void onChanged(List<StockEntity> stockEntities) {
+                                boolean flag = false;
                                 if (stockEntities.isEmpty()){
                                     stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
+                                    flag = true;
                                 }
-                                for (int i = 0; i < stockEntities.size(); i++){
+                                for (int i = 0; i < stockEntities.size(); i++) {
                                     StockEntity stock = stockEntities.get(i);
-                                    if(stock.id_of_stock.equals(id_of_stock)){
-                                        stockDataViewModel.updateById(id_of_stock,stock.quantity_of_stock_ent+count_int,stock.stock_price_when_bought+ans);
-                                    }
-                                    else{
-                                        stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
+                                    if (stock.id_of_stock.equals(id_of_stock)) {
+                                        stockDataViewModel.updateById(id_of_stock, stock.quantity_of_stock_ent + count_int, stock.stock_price_when_bought + ans);
+                                        flag = true;
                                     }
                                 }
+                                if(!flag){stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));}
                                 userViewModel.updateMoney(balance);
                                 Log.d("UserMoney",String.valueOf(money)+"ans");
                                 navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
