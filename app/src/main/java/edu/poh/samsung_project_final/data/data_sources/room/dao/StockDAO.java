@@ -26,5 +26,9 @@ public interface StockDAO {
     void updateById(String id,Integer quantity, double price);
     @Query("SELECT stock_price_when_bought FROM favouritesStocks WHERE id_of_stock = :id")
     double getPriceById(String id);
+    @Query ("SELECT stock_price_when_bought FROM favouritesStocks")
+    List<Double> getPricesOfAllStocks();
+//    @Query("SELECT id_of_stock FROM favouritesStocks")
+//    List<String> getAllId();
 
 }

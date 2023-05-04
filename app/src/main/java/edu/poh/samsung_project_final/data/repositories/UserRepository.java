@@ -57,7 +57,12 @@ public class UserRepository {
     public double getPriceById(String id){
         return stockDAO.getPriceById(id);
     }
+
     public LiveData<List<StockEntity>> getIdOfStock(){
         return stockEntityLiveData;
+    }
+
+    public List<Double> getPricesOfAllStocks(){
+        return stockDAO.getPricesOfAllStocks();
     }
 }
