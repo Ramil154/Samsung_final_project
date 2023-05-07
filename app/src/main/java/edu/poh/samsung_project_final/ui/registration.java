@@ -41,7 +41,6 @@ public class registration extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         binding.RegistrationCharacterMemorize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +64,8 @@ public class registration extends Fragment {
                     return;
                 }
                 userViewModel.insertUser(new UserEntity(login,password_two,MONEY));
+                userViewModel.userEntity.login = login;
+                userViewModel.userEntity.money = MONEY;
                 navController.navigate(R.id.action_registration_to_main_list_of_app);
             }
         });

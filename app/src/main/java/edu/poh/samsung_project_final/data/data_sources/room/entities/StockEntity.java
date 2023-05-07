@@ -11,6 +11,7 @@ public class StockEntity {
     public String name_of_stock;
     public Integer quantity_of_stock_ent;
     public double stock_price_when_bought;
+
     public StockEntity(){}
 
     public StockEntity(@NonNull String id_of_stock, String name_of_stock, int quantity_of_stock_ent,double stock_price_when_bought){

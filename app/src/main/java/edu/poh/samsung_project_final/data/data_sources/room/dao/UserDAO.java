@@ -16,7 +16,7 @@ public interface UserDAO {
     void insert(UserEntity userEntity);
     @Delete
     void delete(UserEntity userEntity);
-    @Query("SELECT * FROM USERTABLE")
+    @Query("SELECT * FROM UserTable")
     LiveData<UserEntity> getUser();
     @Query("UPDATE UserTable SET money = :money")
     void updateMoney(double money);

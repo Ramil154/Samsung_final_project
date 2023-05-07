@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         stockDataViewModel = new ViewModelProvider(this).get(StockDataViewModel.class);
-
         BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.main_list_of_app, R.id.news_for_character, R.id.stock_search)
@@ -55,15 +54,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Check first enter or nonfirst enter
-        userViewModel.getUser().observe(this, new Observer<UserEntity>() {
-            @Override
-            public void onChanged(UserEntity userEntity) {
-                if (userEntity == null){
-                    navController.popBackStack(R.id.my_navigation,true);
-                    navController.navigate(R.id.enter);
-                }
-            }
-        });
+//        //Check first enter or nonfirst enter
+//        userViewModel.getUser().observe(this, new Observer<UserEntity>() {
+//            @Override
+//            public void onChanged(UserEntity userEntity) {
+//                if (userEntity == null){
+//                    navController.popBackStack(R.id.my_navigation,true);
+//                    navController.navigate(R.id.enter);
+//                }
+//            }
+//        });
     }
 }

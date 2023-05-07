@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_navigation"
-    app:startDestination="@id/main_list_of_app">
+    app:startDestination="@id/logoFragment">
 
     <fragment
         android:id="@+id/main_list_of_app"
@@ -95,6 +95,22 @@
         <action
             android:id="@+id/action_delete_stock_from_fav_to_favourites_of_character"
             app:destination="@id/favourites_of_character"
+            app:popUpTo="@id/my_navigation"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/logoFragment"
+        android:name="edu.poh.samsung_project_final.ui.LogoFragment"
+        android:label="fragment_logo"
+        tools:layout="@layout/fragment_logo" >
+        <action
+            android:id="@+id/action_logoFragment_to_main_list_of_app"
+            app:destination="@id/main_list_of_app"
+            app:popUpTo="@id/my_navigation"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_logoFragment_to_enter"
+            app:destination="@id/enter"
             app:popUpTo="@id/my_navigation"
             app:popUpToInclusive="true"/>
     </fragment>

@@ -34,7 +34,7 @@ import java.util.List;
 import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
-import edu.poh.samsung_project_final.databinding.FragmentBuyingAStockBinding;
+import edu.poh.samsung_project_final.data.models.UserInfoModel;
 import edu.poh.samsung_project_final.databinding.FragmentMainListOfAppBinding;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
@@ -46,9 +46,9 @@ public class main_list_of_app extends Fragment {
     private UserViewModel userViewModel;
     private NavController navController;
     private StockDataViewModel stockDataViewModel;
-    private List<Double> prices_of_stocks_when_bought;
+    private UserInfoModel userInfoModel;
     private double all_prices_of_stock_online;
-    private double all_price_of_stock_when_bought;
+
     public static main_list_of_app newInstance() {return null;}
 
 
@@ -60,6 +60,7 @@ public class main_list_of_app extends Fragment {
         navController = navHostFragment.getNavController();
         userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         stockDataViewModel = new ViewModelProvider(getActivity()).get(StockDataViewModel.class);
+        userInfoModel = LogoFragment.userInfoModel;
         return binding.getRoot();
     }
 
@@ -67,43 +68,55 @@ public class main_list_of_app extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("UserProblem", "");
+        binding.plusSumForStocks.setText(String.format("%.2f",userInfoModel.all_stock_price_online - userInfoModel.all_stock_price_bought) + " руб");
+        Log.d("UserProblem", userInfoModel.all_stock_price_bought + "");
+        SumPrecent();
         userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
-            @SuppressLint({"SetTextI18n", "DefaultLocale"})
+            @Override
             public void onChanged(UserEntity userEntity) {
-                prices_of_stocks_when_bought = stockDataViewModel.getPricesOfAllStocks();
-                for (int i = 0; i < prices_of_stocks_when_bought.size(); i++){
+                if(userEntity == null){
+                    binding.userProfileMain.setText("Здравствуйте, " + userViewModel.userEntity.login);
+                    binding.sumOfStocks.setText(String.format("%.2f",userViewModel.userEntity.money + userInfoModel.all_stock_price_online) + " руб");
+                }
+                else {
+                    binding.userProfileMain.setText("Здравствуйте, " + userEntity.login);
+                    binding.sumOfStocks.setText(String.format("%.2f", userEntity.money + userInfoModel.all_stock_price_online) + " руб");
+                }
+                List<Double> prices_of_stocks_when_bought = stockDataViewModel.getPricesOfAllStocks();
+                double all_price_of_stock_when_bought = 0;
+                for (int i = 0; i < prices_of_stocks_when_bought.size(); i++) {
                     all_price_of_stock_when_bought += prices_of_stocks_when_bought.get(i);
                 }
-                if(userEntity == null){
-                    binding.userProfileMain.setText("Здравствуйте, ");
-                }
-                else{
-                    binding.userProfileMain.setText("Здравствуйте, " + userEntity.login);
-                    binding.sumOfStocks.setText(String.format("%.2f",userEntity.money + all_price_of_stock_when_bought) + " руб");
-                    Log.d("UserMoney",String.valueOf(userEntity.money)+" main");
-                }
+                double finalAll_price_of_stock_when_bought = all_price_of_stock_when_bought;
                 stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
                     @Override
                     public void onChanged(List<StockEntity> stockEntities) {
-                        for (int i = 0; i < stockEntities.size(); i++){
+                        for (int i = 0; i < stockEntities.size(); i++) {
                             StockEntity stock = stockEntities.get(i);
-                            parseStockDataCost(stock.id_of_stock,stock.quantity_of_stock_ent);
+                            Log.d("UserProblem", i + "");
+                            parseStockDataCost(stock.id_of_stock, stock.quantity_of_stock_ent);
                         }
+                        new android.os.Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (userInfoModel.all_stock_price_online != all_prices_of_stock_online) {
+                                    if (userInfoModel.all_stock_price_bought != finalAll_price_of_stock_when_bought){
+                                        userInfoModel.all_stock_price_bought = finalAll_price_of_stock_when_bought;
+                                    }
+                                    Log.d("UserProblem", "Catch");
+                                    userInfoModel.all_stock_price_online = all_prices_of_stock_online;
+                                    binding.sumOfStocks.setText(String.format("%.2f",userEntity.money + userInfoModel.all_stock_price_online) + " руб");
+                                    binding.plusSumForStocks.setText(String.format("%.2f", userInfoModel.all_stock_price_online - userInfoModel.all_stock_price_bought) + " руб");
+                                    SumPrecent();
+                                }
+                            }
+                        }, 1000);
                     }
                 });
+                all_prices_of_stock_online = 0;
             }
         });
-        double plus_money = all_prices_of_stock_online - all_price_of_stock_when_bought;
-        binding.plusSumForStocks.setText((plus_money >= 0 ? "+ ": "- ") + String.format("%.2f",abs(plus_money)));
-        if(all_price_of_stock_when_bought == 0){
-            binding.percentMain.setText("+ 0.00");
-        }
-        else {
-            double percent_of_diff = ((all_prices_of_stock_online - all_price_of_stock_when_bought) / all_price_of_stock_when_bought) * 100.0;
-            binding.percentMain.setText((percent_of_diff >= 0 ? "+ ": "- ") + String.format("%.2f",abs(percent_of_diff)));
-        }
-        all_price_of_stock_when_bought = 0;
-        all_prices_of_stock_online = 0;
         binding.GoToFavouritesFromMainByTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,6 +125,18 @@ public class main_list_of_app extends Fragment {
         });
 
     }
+
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
+    private void SumPrecent(){
+        if(userInfoModel.all_stock_price_bought == 0){
+            binding.percentMain.setText("+ 0.00 %");
+        }
+        else {
+            double percent_of_diff = ((userInfoModel.all_stock_price_online - userInfoModel.all_stock_price_bought) / userInfoModel.all_stock_price_bought) * 100.0;
+            binding.percentMain.setText((percent_of_diff >= 0 ? "+ ": "- ") + String.format("%.2f",abs(percent_of_diff)) + " %");
+        }
+    }
+
     private void parseStockDataCost(String sid,Integer quantity) {
         String url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/"+sid+".json";
         RequestQueue queque = Volley.newRequestQueue(requireContext());
@@ -138,16 +163,19 @@ public class main_list_of_app extends Fragment {
         JSONObject jsonObject = new JSONObject(response);
         JSONObject obj = jsonObject.getJSONObject("securities");
         JSONArray data = obj.getJSONArray("data");
-        for (int i = 0; i < data.length();i++){
+        for (int i = 0; i < data.length(); i++) {
             JSONArray data_next = data.getJSONArray(i);
             String boardid = data_next.getString(1);
-            if (!boardid.equals("TQBR")){
+            if (!boardid.equals("TQBR")) {
                 continue;
             }
             double cost_d = data_next.optDouble(3);
-            Double cost_final = cost_d*quantity;
+            double cost_final = cost_d * quantity;
             all_prices_of_stock_online += cost_final;
+            Log.d("UserProblem",  all_prices_of_stock_online + "sms");
         }
 
     }
+
+
 }

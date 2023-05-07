@@ -35,6 +35,7 @@ import java.util.List;
 import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
+import edu.poh.samsung_project_final.data.models.UserInfoModel;
 import edu.poh.samsung_project_final.databinding.FragmentBuyingAStockBinding;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
@@ -51,6 +52,7 @@ public class buying_a_stock extends Fragment {
     private String cost_of_stock;
     private String id_of_stock;
     private double cost_d;
+    private UserInfoModel userInfoModel;
     public static buying_a_stock newInstance() {
         return null;
     }
@@ -63,6 +65,7 @@ public class buying_a_stock extends Fragment {
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
         userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        userInfoModel = LogoFragment.userInfoModel;
         return binding.getRoot();
     }
 
@@ -157,9 +160,11 @@ public class buying_a_stock extends Fragment {
                                         flag = true;
                                     }
                                 }
+                                userInfoModel.all_stock_price_bought += ans;
+                                userInfoModel.all_stock_price_online += ans;
+                                Log.d("UserProblem", userInfoModel.all_stock_price_bought+" ");
                                 if(!flag){stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));}
                                 userViewModel.updateMoney(balance);
-                                Log.d("UserMoney",String.valueOf(money)+"ans");
                                 navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
                             }
                         });

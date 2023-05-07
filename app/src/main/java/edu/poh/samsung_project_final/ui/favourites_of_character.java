@@ -31,6 +31,7 @@ import java.util.List;
 
 import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
+import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
 import edu.poh.samsung_project_final.databinding.FragmentBuyingAStockBinding;
 import edu.poh.samsung_project_final.databinding.FragmentFavouritesOfCharacterBinding;
 import edu.poh.samsung_project_final.ui.adapters.FavouritesAdapter;
@@ -50,6 +51,7 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
     private StockDataViewModel viewModel;
     private FragmentFavouritesOfCharacterBinding binding;
     private UserViewModel userViewModel;
+    private StockDataViewModel stockDataViewModel;
     private double balance;
 
     public static favourites_of_character newInstance() { return null;
@@ -64,7 +66,18 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
         navController = navHostFragment.getNavController();
         adapter = new FavouritesAdapter(this);
         userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        stockDataViewModel = new ViewModelProvider(getActivity()).get(StockDataViewModel.class);
         balance = userViewModel.getMoney();
+        userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
+            @Override
+            public void onChanged(UserEntity userEntity) {
+                stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
+                    @Override
+                    public void onChanged(List<StockEntity> stockEntities) {
+                    }
+                });
+            }
+        });
         return binding.getRoot();
     }
 
@@ -78,6 +91,7 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
                 navController.navigate(R.id.action_favourites_of_character_to_main_list_of_app);
             }
         });
+
         updateData();
     }
 

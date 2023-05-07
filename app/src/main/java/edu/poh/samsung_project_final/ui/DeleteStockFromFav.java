@@ -32,6 +32,7 @@ import java.util.List;
 import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
+import edu.poh.samsung_project_final.data.models.UserInfoModel;
 import edu.poh.samsung_project_final.databinding.DeleteStockFromFavBinding;
 import edu.poh.samsung_project_final.databinding.FragmentBuyingAStockBinding;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
@@ -50,6 +51,7 @@ public class DeleteStockFromFav extends Fragment {
     private String cost_of_stock;
     private String quantity;
     private double cost_d;
+    private UserInfoModel userInfoModel;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class DeleteStockFromFav extends Fragment {
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
         userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        userInfoModel = LogoFragment.userInfoModel;
         return binding.getRoot();
     }
 
@@ -81,7 +84,7 @@ public class DeleteStockFromFav extends Fragment {
                         return;
                     }
                     int count_int = Integer.parseInt(count);
-                    double ans = cost_d * (double) count_int;
+                    double ans = cost_d * count_int;
                     if (count_int > count_of_fav){
                         Toast.makeText(DeleteStockFromFav.this.getActivity(), "Вы указали количество акций большее, чем у вас в избранных", Toast.LENGTH_SHORT).show();
                     }
@@ -94,6 +97,8 @@ public class DeleteStockFromFav extends Fragment {
                         stockDataViewModel.updateById(id_of_stock,(count_of_fav - count_int),price - ans);
                         updateUserMoneyNow(ans);
                     }
+                    userInfoModel.all_stock_price_online -= ans;
+                    userInfoModel.all_stock_price_bought -= ans;
                 }
                 catch (StringIndexOutOfBoundsException exception){
                     Toast.makeText(DeleteStockFromFav.this.getActivity(), "В поле «Введите количество акций, которые хотите удалить из избранных» вы ничего не ввели", Toast.LENGTH_SHORT).show();
