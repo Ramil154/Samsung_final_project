@@ -65,4 +65,12 @@ public class UserRepository {
     public List<Double> getPricesOfAllStocks(){
         return stockDAO.getPricesOfAllStocks();
     }
+
+    public List<String> getALLID(){
+        return stockDAO.getAllID();
+    }
+
+    public Integer getQuantityById(String id){
+        return stockDAO.getQuantityById(id);
+    }
 }

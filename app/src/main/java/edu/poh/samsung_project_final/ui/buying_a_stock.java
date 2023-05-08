@@ -52,6 +52,7 @@ public class buying_a_stock extends Fragment {
     private String cost_of_stock;
     private String id_of_stock;
     private double cost_d;
+    private List<String> AllID;
     private UserInfoModel userInfoModel;
     public static buying_a_stock newInstance() {
         return null;
@@ -125,14 +126,15 @@ public class buying_a_stock extends Fragment {
         this.stockDataViewModel = new ViewModelProvider(this).get(StockDataViewModel.class);
         Bundle args = getArguments();
         id_of_stock= args.getString(KEY_ID);
+        AllID = stockDataViewModel.getALlID();
         parseStockDataCost(id_of_stock);
         binding.GoToFavourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
+                try {
                     String count = binding.gettingCountOfStocks.getText().toString();
                     char symbol = count.charAt(0);
-                    if (symbol == '0' || symbol == '.' || symbol == ','){
+                    if (symbol == '0' || symbol == '.' || symbol == ',') {
                         Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -140,34 +142,36 @@ public class buying_a_stock extends Fragment {
                     int count_int = Integer.parseInt(count);
                     double ans = cost_d * (double) count_int;
                     double money = userViewModel.getMoney();
-                    if(ans > money){
+                    Log.d("UserBuy", " ");
+                    if (ans > money) {
                         Toast.makeText(buying_a_stock.this.getActivity(), "Вы превысили ваш бюджет", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                    } else {
                         double balance = money - ans;
-                        stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
-                            @Override
-                            public void onChanged(List<StockEntity> stockEntities) {
-                                boolean flag = false;
-                                if (stockEntities.isEmpty()){
-                                    stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));
+                        Log.d("UserBuy", "Buying a stock");
+                        if (AllID.isEmpty()) {
+                            stockDataViewModel.insertStock(new StockEntity(id_of_stock, name_of_stock, count_int, ans));
+                            Log.d("UserBuy", "Empty " + id_of_stock);
+                            updateAll(ans, balance);
+                        } else {
+                            boolean flag = false;
+                            for (int i = 0; i < AllID.size(); i++) {
+                                String id = AllID.get(i);
+                                if (id.equals(id_of_stock)) {
                                     flag = true;
+                                    Log.d("UserBuy", "Update " + id_of_stock);
+                                    double price = stockDataViewModel.getPriceById(id);
+                                    Integer quantity = stockDataViewModel.getQuantityById(id);
+                                    stockDataViewModel.updateById(id_of_stock, quantity + count_int, price + ans);
+                                    updateAll(ans, balance);
+                                    break;
                                 }
-                                for (int i = 0; i < stockEntities.size(); i++) {
-                                    StockEntity stock = stockEntities.get(i);
-                                    if (stock.id_of_stock.equals(id_of_stock)) {
-                                        stockDataViewModel.updateById(id_of_stock, stock.quantity_of_stock_ent + count_int, stock.stock_price_when_bought + ans);
-                                        flag = true;
-                                    }
-                                }
-                                userInfoModel.all_stock_price_bought += ans;
-                                userInfoModel.all_stock_price_online += ans;
-                                Log.d("UserProblem", userInfoModel.all_stock_price_bought+" ");
-                                if(!flag){stockDataViewModel.insertStock(new StockEntity(id_of_stock,name_of_stock,count_int,ans));}
-                                userViewModel.updateMoney(balance);
-                                navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
                             }
-                        });
+                            if (!flag) {
+                                stockDataViewModel.insertStock(new StockEntity(id_of_stock, name_of_stock, count_int, ans));
+                                Log.d("USerBuy", "Else equals " + id_of_stock);
+                                updateAll(ans, balance);
+                            }
+                        }
                     }
                 }
                 catch (StringIndexOutOfBoundsException exception){
@@ -175,5 +179,13 @@ public class buying_a_stock extends Fragment {
                 }
             }
         });
+    }
+
+
+    private void updateAll(double ans, double balance){
+        userInfoModel.all_stock_price_bought += ans;
+        userInfoModel.all_stock_price_online += ans;
+        userViewModel.updateMoney(balance);
+        navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
     }
 }

@@ -28,6 +28,10 @@ public interface StockDAO {
     double getPriceById(String id);
     @Query ("SELECT stock_price_when_bought FROM favouritesStocks")
     List<Double> getPricesOfAllStocks();
+    @Query ("SELECT id_of_stock FROM favouritesStocks")
+    List<String> getAllID();
+    @Query("SELECT quantity_of_stock_ent FROM favouritesStocks WHERE id_of_stock = :id")
+    Integer getQuantityById(String id);
 //    @Query("SELECT id_of_stock FROM favouritesStocks")
 //    List<String> getAllId();
 

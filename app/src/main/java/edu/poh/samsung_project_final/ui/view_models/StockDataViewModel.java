@@ -46,4 +46,12 @@ public class StockDataViewModel extends AndroidViewModel {
         return userRepository.getPricesOfAllStocks();
     }
 
+    public List<String> getALlID(){
+        return userRepository.getALLID();
+    }
+
+    public Integer getQuantityById(String id){
+        return userRepository.getQuantityById(id);
+    }
+
 }
