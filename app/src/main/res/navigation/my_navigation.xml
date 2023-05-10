@@ -9,17 +9,7 @@
         android:id="@+id/main_list_of_app"
         android:name="edu.poh.samsung_project_final.ui.main_list_of_app"
         android:label="fragment_main_list_of_app"
-        tools:layout="@layout/fragment_main_list_of_app" >
-        <action
-            android:id="@+id/action_main_list_of_app_to_favourites_of_character"
-            app:destination="@id/favourites_of_character"
-            app:popUpTo="@id/main_list_of_app" />
-    </fragment>
-    <fragment
-        android:id="@+id/news_for_character"
-        android:name="edu.poh.samsung_project_final.ui.news_for_character"
-        android:label="fragment_news_for_character"
-        tools:layout="@layout/fragment_news_for_character" />
+        tools:layout="@layout/fragment_main_list_of_app" />
     <fragment
         android:id="@+id/stock_search"
         android:name="edu.poh.samsung_project_final.ui.stock_search"
@@ -57,9 +47,6 @@
         android:name="edu.poh.samsung_project_final.ui.favourites_of_character"
         android:label="fragment_favourites_of_character"
         tools:layout="@layout/fragment_favourites_of_character" >
-        <action
-            android:id="@+id/action_favourites_of_character_to_main_list_of_app"
-            app:destination="@id/main_list_of_app" />
         <action
             android:id="@+id/action_favourites_of_character_to_stock_page"
             app:destination="@id/stock_page" />

@@ -85,13 +85,6 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initStockRecyclerView();
-        binding.cardViewGoToMainFragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_favourites_of_character_to_main_list_of_app);
-            }
-        });
-
         updateData();
     }
 

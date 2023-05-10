@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.stock_search">
-    <LinearLayout
+    tools:context=".ui.stock_search"
+    android:background="@color/Yellow_200">
+
+    <TextView
+        android:id="@+id/characterStockSearch"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_rounded_edittext"
+        android:gravity="center_vertical"
+        android:paddingStart="15dp"
+        android:text="Поиск..."
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="normal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/stockRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/Yellow_200">
-        <TextView
-            android:id="@+id/characterStockSearch"
-            android:layout_width="match_parent"
-            android:layout_height="61dp"
-            android:layout_marginTop="11dp"
-            android:gravity="center_vertical"
-            android:background="@drawable/bg_rounded_edittext"
-            android:text="Поиск..."
-            android:paddingStart="15dp"
-            android:textColor="@color/black"
-            android:textStyle="normal"
-            android:textSize="20sp"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/stockRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="40dp"/>
-    </LinearLayout>
+        android:layout_marginTop="96dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/characterStockSearch" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

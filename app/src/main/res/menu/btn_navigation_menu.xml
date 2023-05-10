@@ -3,15 +3,15 @@
     <item
         android:id="@+id/main_list_of_app"
         android:icon="@drawable/ic_baseline_home_24"
-        android:title="Home" />
+        android:title="Главная" />
 
     <item
-        android:id="@+id/news_for_character"
-        android:icon="@drawable/ic_baseline_newspaper_24"
-        android:title="News" />
+        android:id="@+id/favourites_of_character"
+        android:icon="@drawable/ic_baseline_star_24"
+        android:title="Избранные" />
 
     <item
         android:id="@+id/stock_search"
         android:icon="@drawable/ic_baseline_business_center_24"
-        android:title="Stock" />
+        android:title="Ценные бумаги" />
 </menu>

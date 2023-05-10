@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,25 +30,37 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
 import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
 import edu.poh.samsung_project_final.data.models.UserInfoModel;
+import edu.poh.samsung_project_final.data.models.ValutesModel;
+import edu.poh.samsung_project_final.data.models.stockSearchModel;
 import edu.poh.samsung_project_final.databinding.FragmentMainListOfAppBinding;
+import edu.poh.samsung_project_final.ui.adapters.StockAdapter;
+import edu.poh.samsung_project_final.ui.adapters.ValutesAdapter;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
+import edu.poh.samsung_project_final.ui.view_models.ValutesViewModel;
+import edu.poh.samsung_project_final.ui.view_models.stockSearchViewModel;
 
 
 public class main_list_of_app extends Fragment {
     private FragmentMainListOfAppBinding binding;
     private NavHostFragment navHostFragment;
     private UserViewModel userViewModel;
+    private ValutesAdapter adapter;
     private NavController navController;
+    private ValutesViewModel model = new ValutesViewModel();
     private StockDataViewModel stockDataViewModel;
     private UserInfoModel userInfoModel;
     private double all_prices_of_stock_online;
+    private final List<String> TEXT = Arrays.asList("Канадский доллар","Швейцарский франк","Китайский юань","Евро","Фунт стерлингов",
+            "Гонконгский доллар","Японская йена","Турецкая лира","Доллар США");
 
     public static main_list_of_app newInstance() {return null;}
 
@@ -72,6 +85,8 @@ public class main_list_of_app extends Fragment {
         binding.plusSumForStocks.setText(String.format("%.2f",userInfoModel.all_stock_price_online - userInfoModel.all_stock_price_bought) + " руб");
         Log.d("UserProblem", userInfoModel.all_stock_price_bought + "");
         SumPrecent();
+        parseValuteData();
+        initValuteRecyclerView();
         userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
             @Override
             public void onChanged(UserEntity userEntity) {
@@ -117,13 +132,7 @@ public class main_list_of_app extends Fragment {
                 all_prices_of_stock_online = 0;
             }
         });
-        binding.GoToFavouritesFromMainByTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_main_list_of_app_to_favourites_of_character);
-            }
-        });
-
+        updateData();
     }
 
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
@@ -174,8 +183,63 @@ public class main_list_of_app extends Fragment {
             all_prices_of_stock_online += cost_final;
             Log.d("UserProblem",  all_prices_of_stock_online + "sms");
         }
-
     }
 
+    private void parseValuteData() {
+        String url = "https://iss.moex.com/iss/statistics/engines/futures/markets/indicativerates/securities.json";
+        RequestQueue queque = Volley.newRequestQueue(requireContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            List<ValutesModel> stocks = setValute(response);
+                            model.LiveDataListForValutes.setValue(stocks);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("MyWay", "VolleyError:" + error.toString());
+            }
+        });
+        queque.add(stringRequest);
+    }
 
+    @SuppressLint("DefaultLocale")
+    private List<ValutesModel> setValute(String response) throws JSONException {
+        List<ValutesModel> titles = new ArrayList<>();
+        JSONObject obj = new JSONObject(response);
+        JSONObject description = obj.getJSONObject("securities");
+        JSONArray data = description.getJSONArray("data");
+        for (int i = 0;i < data.length(); i++){
+            JSONArray valute = data.getJSONArray(i);
+            Double cost_d = valute.optDouble(3);
+            if(Double.isNaN(cost_d)){}
+            else{
+                String cost = cost_d.toString();
+                titles.add(new ValutesModel(TEXT.get(i),valute.getString(2),cost));
+            }
+        }
+        return titles;
+    }
+
+    private void initValuteRecyclerView(){
+        binding.valutesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new ValutesAdapter();
+        binding.valutesRecyclerView.setAdapter(adapter);
+        ValutesViewModel valutesViewModel = new ViewModelProvider(this).get(ValutesViewModel.class);
+        model = valutesViewModel;
+    }
+
+    private void updateData(){
+        model.LiveDataListForValutes.observe(getViewLifecycleOwner(), new Observer<List<ValutesModel>>() {
+            @Override
+            public void onChanged(List<ValutesModel> places) {
+                adapter.setList(places);
+            }
+        });
+    }
 }
