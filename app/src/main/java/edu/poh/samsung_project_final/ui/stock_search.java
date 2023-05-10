@@ -16,6 +16,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import edu.poh.samsung_project_final.R;
@@ -51,6 +54,7 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
     final String KEY_ID = "1";
     private final String CHECK = "2";
     private final String CHECK_STRING = "false";
+    private ArrayList<stockSearchModel> final_list = new ArrayList<>();
     private final stockSearchViewModel model = new stockSearchViewModel();
     private final StockAdapter.StockComparator stockComparator = new StockAdapter.StockComparator();
     private NavController navController;
@@ -71,8 +75,38 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
         super.onViewCreated(view, savedInstanceState);
         requestStockData();
         initStockRecyclerView();
+        binding.characterStockSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
+            }
+        });
         updateData();
     }
+
+    private void filter(String text){
+        ArrayList<stockSearchModel> places = new ArrayList<>();
+        for(stockSearchModel stock: final_list){
+            if(stock.name_of_stock.toLowerCase().contains(text.toLowerCase())){
+                places.add(stock);
+            }
+            else if(stock.id_of_stock.contains(text)){
+                places.add(stock);
+            }
+        }
+        adapter.submitList(places);
+    }
+
     private void requestStockData(){
         String url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities.json";
         RequestQueue queque = Volley.newRequestQueue(requireContext());
@@ -131,6 +165,7 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
         model.LiveDataListForStocks.observe(getViewLifecycleOwner(), new Observer<ArrayList<stockSearchModel>>() {
             @Override
             public void onChanged(ArrayList<stockSearchModel> places) {
+                final_list = places;
                 adapter.submitList(places);
             }
         });

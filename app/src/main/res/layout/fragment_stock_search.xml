@@ -7,18 +7,22 @@
     tools:context=".ui.stock_search"
     android:background="@color/Yellow_200">
 
-    <TextView
+    <EditText
         android:id="@+id/characterStockSearch"
         android:layout_width="match_parent"
         android:layout_height="61dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/bg_rounded_edittext"
         android:gravity="center_vertical"
+        android:hint="Поиск..."
         android:paddingStart="15dp"
-        android:text="Поиск..."
         android:textColor="@color/black"
+        android:textColorHint="@color/black"
         android:textSize="22sp"
         android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,8 +30,13 @@
         android:id="@+id/stockRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="96dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/characterStockSearch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
