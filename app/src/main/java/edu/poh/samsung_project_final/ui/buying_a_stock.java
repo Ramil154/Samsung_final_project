@@ -51,7 +51,7 @@ public class buying_a_stock extends Fragment {
     private String name_of_stock;
     private String cost_of_stock;
     private String id_of_stock;
-    private double cost_d;
+    private Double cost_d;
     private List<String> AllID;
     private UserInfoModel userInfoModel;
     public static buying_a_stock newInstance() {
@@ -83,15 +83,7 @@ public class buying_a_stock extends Fragment {
             }
             name_of_stock = data_next.getString(9);
             cost_d = data_next.optDouble(3);
-            if(cost_d < 10.0){
-                cost_of_stock = String.format("%.3f",cost_d);
-            }
-            else if (cost_d < 100.0){
-                cost_of_stock = String.format("%.2f",cost_d);
-            }
-            else{
-                cost_of_stock = String.format("%.1f",cost_d);
-            }
+            cost_of_stock = cost_d.toString();
             binding.stockSBuyingName.setText(name_of_stock);
             binding.stockSBuyingCost.setText(cost_of_stock + " руб");
         }

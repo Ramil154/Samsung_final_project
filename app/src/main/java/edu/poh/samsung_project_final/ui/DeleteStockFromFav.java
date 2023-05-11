@@ -50,7 +50,7 @@ public class DeleteStockFromFav extends Fragment {
     private String name_of_stock;
     private String cost_of_stock;
     private String quantity;
-    private double cost_d;
+    private Double cost_d;
     private UserInfoModel userInfoModel;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -145,15 +145,7 @@ public class DeleteStockFromFav extends Fragment {
             }
             name_of_stock = data_next.getString(9);
             cost_d = data_next.optDouble(3);
-            if(cost_d < 10.0){
-                cost_of_stock = String.format("%.3f",cost_d);
-            }
-            else if (cost_d < 100.0){
-                cost_of_stock = String.format("%.2f",cost_d);
-            }
-            else{
-                cost_of_stock = String.format("%.1f",cost_d);
-            }
+            cost_of_stock = cost_d.toString();
             binding.stocksDeleteName.setText(name_of_stock);
             binding.stocksDeleteCost.setText(cost_of_stock + " руб");
         }

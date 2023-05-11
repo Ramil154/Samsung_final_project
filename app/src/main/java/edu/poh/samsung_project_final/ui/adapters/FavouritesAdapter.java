@@ -180,26 +180,15 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
             }
             Double cost_d = data_next.optDouble(3);
             String cost_of_stock;
-            if(cost_d < 10.0){
-                cost_of_stock = String.format("%.3f",cost_d);
-            }
-            else if (cost_d < 100.0){
-                cost_of_stock = String.format("%.2f",cost_d);
-            }
-            else{
-                cost_of_stock = String.format("%.1f",cost_d);
-            }
+            cost_of_stock = cost_d.toString();
             holder.cost.setText(cost_of_stock + " руб");
             Double cost_final = cost_d*count;
             String all_cost;
             if(cost_final < 10.0){
                 all_cost = String.format("%.3f",cost_final);
             }
-            else if (cost_final < 1000.0){
-                all_cost = String.format("%.2f",cost_final);
-            }
             else{
-                all_cost = String.format("%.1f",cost_final);
+                all_cost = String.format("%.2f",cost_final);
             }
             holder.all_cost.setText(all_cost + " руб");
             double percent_of_diff = ((cost_final - bought_stock)/bought_stock) * 100.0;

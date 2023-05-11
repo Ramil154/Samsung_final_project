@@ -141,19 +141,11 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
             if (!boardid.equals("TQBR")) {
                 continue;
             }
-            double cost_d = data_next.optDouble(3);
+            Double cost_d = data_next.optDouble(3);
             if(Double.isNaN(cost_d)){}
             else{
                 String cost;
-                if(cost_d < 10.0){
-                    cost = String.format("%.3f",cost_d);
-                }
-                else if (cost_d < 100.0){
-                    cost = String.format("%.2f",cost_d);
-                }
-                else{
-                    cost = String.format("%.1f",cost_d);
-                }
+                cost = cost_d.toString();
                 titles.add(new stockSearchModel(data_next.getString(9),cost,data_next.getString(0)));
             }
 

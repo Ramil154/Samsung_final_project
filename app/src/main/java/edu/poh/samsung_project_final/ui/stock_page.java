@@ -205,6 +205,7 @@ public class stock_page extends Fragment{
         JSONObject obj = new JSONObject(response);
         JSONObject history = obj.getJSONObject("history");
         JSONArray data = history.getJSONArray("data");
+        int counter = 0;
         for (int i = 0; i < data.length(); i++){
             JSONArray mas = data.getJSONArray(i);
             Double cost_history = mas.optDouble(9);
@@ -218,7 +219,8 @@ public class stock_page extends Fragment{
                     flag_graph = true;
                 }
                 Log.d("MyWay", String.valueOf(cost_f));
-                graphics.add(new Entry(i,cost_f));
+                graphics.add(new Entry(counter,cost_f));
+                counter++;
                 Dates_onGraph.add(date);
             }
         }
@@ -237,22 +239,20 @@ public class stock_page extends Fragment{
             }
             String name = data_next.getString(9);
             Double cost_d = data_next.optDouble(3);
-            if(cost_d < 10.0){
-                cost = String.format("%.3f",cost_d);
-            }
-            else if (cost_d < 100.0){
-                cost = String.format("%.2f",cost_d);
-            }
-            else{
-                cost = String.format("%.1f",cost_d);
-            }
+            cost = cost_d.toString();
             binding.stockSPageName.setText(name);
             binding.stockCostInGraphicsDate.setText(cost + " руб");
             new android.os.Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     double ans = cost_d - cost_first_in_data;
-                    String answer = String.format("%.2f",abs(ans));
+                    String answer;
+                    if (cost_d < 5){
+                        answer = String.format("%.4f",abs(ans));
+                    }
+                    else{
+                        answer = String.format("%.2f",abs(ans));
+                    }
                     double percent_of_diff = ((ans) / cost_d) * 100.0;
                     if (percent_of_diff < 0.0){
                         binding.plusOfStockDateAndPercent.setTextColor(Color.parseColor("#D41307"));
