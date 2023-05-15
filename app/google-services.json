@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "880834485666",
+    "firebase_url": "https://samsungprojectfinal-d909e-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "samsungprojectfinal-d909e",
+    "storage_bucket": "samsungprojectfinal-d909e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:880834485666:android:24d0f04aaac76a6b81a6fb",
+        "android_client_info": {
+          "package_name": "edu.poh.parsingfrominet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "880834485666-0ffpbp3faj4mef5mfl3hbedp93ebrsft.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHW5xErQ2UEQtWTFhQymsBlZNZszRBwjk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "880834485666-0ffpbp3faj4mef5mfl3hbedp93ebrsft.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:880834485666:android:8462ee772085218c81a6fb",
+        "android_client_info": {
+          "package_name": "edu.poh.samsung_project_final"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "880834485666-0ffpbp3faj4mef5mfl3hbedp93ebrsft.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHW5xErQ2UEQtWTFhQymsBlZNZszRBwjk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "880834485666-0ffpbp3faj4mef5mfl3hbedp93ebrsft.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
