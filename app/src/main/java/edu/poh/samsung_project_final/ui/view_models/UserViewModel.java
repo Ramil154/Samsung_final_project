@@ -40,4 +40,6 @@ public class UserViewModel extends AndroidViewModel {
     public double getMoney(){
         return userRepository.getMoney();
     }
+
+    public void updateLogin(String login) {userRepository.updateLogin(login);}
 }

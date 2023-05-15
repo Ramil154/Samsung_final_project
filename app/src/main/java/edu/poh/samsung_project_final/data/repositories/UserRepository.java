@@ -37,8 +37,13 @@ public class UserRepository {
     public double getMoney(){
         return userDAO.getMoney();
     }
+
     public LiveData<UserEntity> getUser(){
         return userEntityLiveData;
+    }
+
+    public void updateLogin(String login) {
+        UserDatabase.databaseWriteExecutor.execute(() -> userDAO.updateLogin(login));
     }
 
     //Stocks

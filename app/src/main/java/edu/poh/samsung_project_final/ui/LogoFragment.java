@@ -1,6 +1,9 @@
 package edu.poh.samsung_project_final.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -60,36 +64,46 @@ public class LogoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
-            @Override
-            public void onChanged(UserEntity userEntity) {
-                if (userEntity == null){
-                    navController.navigate(R.id.action_logoFragment_to_enter);
+        if (!isNetworkAvailable()) {
+            Toast.makeText(getContext(),"Подключитесь к интернету, чтобы продолжить работу в приложении Chill Invest",Toast.LENGTH_SHORT).show();
+            new android.os.Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    getActivity().finish();
                 }
-                else {
-                    List<Double> prices_of_stocks_when_bought = stockDataViewModel.getPricesOfAllStocks();
-                    for (int i = 0; i < prices_of_stocks_when_bought.size(); i++) {
-                        userInfoModel.all_stock_price_bought += prices_of_stocks_when_bought.get(i);
-                    }
-                    stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
-                        @Override
-                        public void onChanged(List<StockEntity> stockEntities) {
-                            for (int i = 0; i < stockEntities.size(); i++) {
-                                StockEntity stock = stockEntities.get(i);
-                                parseStockDataCost(stock.id_of_stock, stock.quantity_of_stock_ent);
-                            }
-                            new android.os.Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    navController.navigate(R.id.action_logoFragment_to_main_list_of_app);
-                                }
-                            }, 2000);
-                            //navController.navigate(R.id.action_logoFragment_to_main_list_of_app);
+            }, 1700);
+        }
+        else {
+            userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
+                @Override
+                public void onChanged(UserEntity userEntity) {
+                    if (userEntity == null) {
+                        navController.navigate(R.id.action_logoFragment_to_enter);
+                    } else {
+                        List<Double> prices_of_stocks_when_bought = stockDataViewModel.getPricesOfAllStocks();
+                        for (int i = 0; i < prices_of_stocks_when_bought.size(); i++) {
+                            userInfoModel.all_stock_price_bought += prices_of_stocks_when_bought.get(i);
                         }
-                    });
+                        stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
+                            @Override
+                            public void onChanged(List<StockEntity> stockEntities) {
+                                for (int i = 0; i < stockEntities.size(); i++) {
+                                    StockEntity stock = stockEntities.get(i);
+                                    parseStockDataCost(stock.id_of_stock, stock.quantity_of_stock_ent);
+                                }
+                                new android.os.Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        navController.navigate(R.id.action_logoFragment_to_main_list_of_app);
+                                    }
+                                }, 2300);
+                                //navController.navigate(R.id.action_logoFragment_to_main_list_of_app);
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void parseStockDataCost(String sid,Integer quantity) {
@@ -131,7 +145,14 @@ public class LogoFragment extends Fragment {
         }
 
     }
+
     public UserInfoModel getUserInfoModel(){
         return userInfoModel;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 }

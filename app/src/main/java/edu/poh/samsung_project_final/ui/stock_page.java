@@ -163,7 +163,7 @@ public class stock_page extends Fragment{
                 int x = Math.round(xValue);
                 float yValue = e.getY();
                 //String date = Dates_onGraph.get(xValue);
-                Toast.makeText(getContext(), "Значение: " + yValue + " "+ x, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "Значение: " + yValue + " "+ x, Toast.LENGTH_SHORT).show();
                 binding.plusOfStockDateAndPercent.setVisibility(View.GONE);
                 binding.stockCostInGraphicsDate.setText(yValue + "руб - " + Dates_onGraph.get(x));
             }

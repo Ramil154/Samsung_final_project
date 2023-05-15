@@ -11,12 +11,14 @@ public class UserEntity {
     public String login;
     public String password;
     public double money;
+    public String email;
 
     public UserEntity(){}
 
-    public UserEntity(@NonNull String login, String password,double money){
-        this.login = login;
+    public UserEntity(@NonNull String email, String password,double money, String login){
+        this.email = email;
         this.password = password;
         this.money = money;
+        this.login = login;
     }
 }

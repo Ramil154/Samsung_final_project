@@ -26,6 +26,7 @@ public class registration extends Fragment {
     private NavController navController;
     private UserViewModel userViewModel;
     private final double MONEY = 20000;
+    private final String NOT_LOG = "Not correct log";
     public static registration newInstance() {return null;}
 
     @Override
@@ -44,12 +45,12 @@ public class registration extends Fragment {
         binding.RegistrationCharacterMemorize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String login = binding.RegistrationLoginMemorize.getText().toString();
-                if (login.length() == 0){
-                    Toast.makeText(getContext(), "Вы не ввели логин в поле 'Введите логин'", Toast.LENGTH_SHORT).show();
+                String email = binding.RegistrationEmailMemorize.getText().toString();
+                if (email.length() == 0){
+                    Toast.makeText(getContext(), "Вы не ввели email в поле 'Введите email", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (login.length() < 4){
+                if (email.length() < 4){
                     Toast.makeText(getContext(), "Минимальное число символов в поле 'Введите логин' 4", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -63,10 +64,11 @@ public class registration extends Fragment {
                     Toast.makeText(getContext(), "Ваши пароли не совпадают!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                userViewModel.insertUser(new UserEntity(login,password_two,MONEY));
-                userViewModel.userEntity.login = login;
+                userViewModel.insertUser(new UserEntity(email,password_two,MONEY,NOT_LOG));
+                userViewModel.userEntity.email = email;
+                userViewModel.userEntity.login = NOT_LOG;
                 userViewModel.userEntity.money = MONEY;
-                navController.navigate(R.id.action_registration_to_main_list_of_app);
+                navController.navigate(R.id.action_registration_to_rememberLogin);
             }
         });
 

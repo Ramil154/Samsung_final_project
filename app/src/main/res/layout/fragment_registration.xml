@@ -24,13 +24,13 @@
         android:gravity="center">
 
         <EditText
-            android:id="@+id/RegistrationLoginMemorize"
+            android:id="@+id/RegistrationEmailMemorize"
             android:layout_width="260dp"
             android:layout_height="45dp"
             android:layout_marginTop="207dp"
             android:background="@drawable/bg_rounded_edittext"
             android:gravity="center"
-            android:hint="Введите логин"
+            android:hint="Введите email"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:textSize="18sp"

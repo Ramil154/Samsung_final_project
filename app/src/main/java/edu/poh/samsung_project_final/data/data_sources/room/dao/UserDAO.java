@@ -22,4 +22,6 @@ public interface UserDAO {
     void updateMoney(double money);
     @Query("SELECT money FROM UserTable")
     double getMoney();
+    @Query("UPDATE UserTable SET login = :login")
+    void updateLogin(String login);
 }
