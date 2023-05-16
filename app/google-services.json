@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:880834485666:android:24d0f04aaac76a6b81a6fb",
+        "mobilesdk_app_id": "1:880834485666:android:583de2bfacc8f60881a6fb",
         "android_client_info": {
-          "package_name": "edu.poh.parsingfrominet"
+          "package_name": "edu.poh.samsung_project_final"
         }
       },
       "oauth_client": [
@@ -37,9 +37,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:880834485666:android:8462ee772085218c81a6fb",
+        "mobilesdk_app_id": "1:880834485666:android:123fb4190c89093881a6fb",
         "android_client_info": {
-          "package_name": "edu.poh.samsung_project_final"
+          "package_name": "edu.poh.samsung_project_final.ui"
         }
       },
       "oauth_client": [
