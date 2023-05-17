@@ -77,7 +77,6 @@ public class stock_page extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         graphics.clear();
-        cost_first_in_data = 0;
         Dates_onGraph.clear();
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -96,7 +95,6 @@ public class stock_page extends Fragment{
         new android.os.Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.d("MyWay",graphics.toString());
                 setGraph(binding.graphicOfStockMonth,graphics,"Цена акций за месяц");
             }
         },500);
