@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.poh.samsung_project_final.R;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
-import edu.poh.samsung_project_final.data.models.ValutesModel;
+import edu.poh.samsung_project_final.ui.adapters.data.models.ValutesModel;
 
 public class ValutesAdapter extends RecyclerView.Adapter<ValutesAdapter.ValuteDataHolder> {
     private List<ValutesModel> list = new ArrayList();

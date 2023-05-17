@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,9 +33,10 @@ import org.json.JSONObject;
 import java.util.List;
 
 import edu.poh.samsung_project_final.R;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
-import edu.poh.samsung_project_final.data.models.UserInfoModel;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.DataLoadCallback;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.StockEntity;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.UserEntity;
+import edu.poh.samsung_project_final.ui.adapters.data.models.UserInfoModel;
 import edu.poh.samsung_project_final.databinding.FragmentLogoBinding;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
@@ -48,6 +48,7 @@ public class LogoFragment extends Fragment {
     private UserViewModel userViewModel;
     public static UserInfoModel userInfoModel;
     private StockDataViewModel stockDataViewModel;
+    private final String NOT_LOG = "Not correct log";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,24 +81,39 @@ public class LogoFragment extends Fragment {
                     if (userEntity == null) {
                         navController.navigate(R.id.action_logoFragment_to_enter);
                     } else {
-                        List<Double> prices_of_stocks_when_bought = stockDataViewModel.getPricesOfAllStocks();
-                        for (int i = 0; i < prices_of_stocks_when_bought.size(); i++) {
-                            userInfoModel.all_stock_price_bought += prices_of_stocks_when_bought.get(i);
-                        }
-                        stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
+                        userViewModel.uploadUserDataFromFireBase(new DataLoadCallback() {
                             @Override
-                            public void onChanged(List<StockEntity> stockEntities) {
-                                for (int i = 0; i < stockEntities.size(); i++) {
-                                    StockEntity stock = stockEntities.get(i);
-                                    parseStockDataCost(stock.id_of_stock, stock.quantity_of_stock_ent);
-                                }
-                                new android.os.Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        navController.navigate(R.id.action_logoFragment_to_main_list_of_app);
+                            public void onDataLoaded() {
+                                try{
+                                    if (userViewModel.userEntity.login.equals(NOT_LOG)){
+                                        navController.navigate(R.id.action_logoFragment_to_rememberLogin);
                                     }
-                                }, 2300);
-                                //navController.navigate(R.id.action_logoFragment_to_main_list_of_app);
+                                    else {
+                                        List<Double> prices_of_stocks_when_bought = stockDataViewModel.getPricesOfAllStocks();
+                                        for (int i = 0; i < prices_of_stocks_when_bought.size(); i++) {
+                                            userInfoModel.all_stock_price_bought += prices_of_stocks_when_bought.get(i);
+                                        }
+                                        stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
+                                            @Override
+                                            public void onChanged(List<StockEntity> stockEntities) {
+                                                for (int i = 0; i < stockEntities.size(); i++) {
+                                                    StockEntity stock = stockEntities.get(i);
+                                                    parseStockDataCost(stock.id_of_stock, stock.quantity_of_stock_ent);
+                                                }
+                                                new android.os.Handler().postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        navController.navigate(R.id.action_logoFragment_to_main_list_of_app);
+                                                    }
+                                                }, 2300);
+                                                //navController.navigate(R.id.action_logoFragment_to_main_list_of_app);
+                                            }
+                                        });
+                                    }
+                                }
+                                catch (Exception e){
+                                    e.printStackTrace();
+                                }
                             }
                         });
                     }
@@ -122,7 +138,6 @@ public class LogoFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("MyWay", "VolleyError:" + error.toString());
             }
         });
         queque.add(stringRequest);

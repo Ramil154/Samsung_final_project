@@ -12,30 +12,17 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
 
 import java.util.List;
 
 import edu.poh.samsung_project_final.R;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
-import edu.poh.samsung_project_final.databinding.FragmentBuyingAStockBinding;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.StockEntity;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.UserEntity;
 import edu.poh.samsung_project_final.databinding.FragmentFavouritesOfCharacterBinding;
 import edu.poh.samsung_project_final.ui.adapters.FavouritesAdapter;
-import edu.poh.samsung_project_final.ui.adapters.StockAdapter;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
 
@@ -67,15 +54,10 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
         adapter = new FavouritesAdapter(this);
         userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         stockDataViewModel = new ViewModelProvider(getActivity()).get(StockDataViewModel.class);
-        balance = userViewModel.getMoney();
-        userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
+        balance = userViewModel.userEntity.money;
+        stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
             @Override
-            public void onChanged(UserEntity userEntity) {
-                stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
-                    @Override
-                    public void onChanged(List<StockEntity> stockEntities) {
-                    }
-                });
+            public void onChanged(List<StockEntity> stockEntities) {
             }
         });
         return binding.getRoot();

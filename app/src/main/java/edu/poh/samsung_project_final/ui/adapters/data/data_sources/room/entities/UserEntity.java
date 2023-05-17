@@ -1,4 +1,4 @@
-package edu.poh.samsung_project_final.data.data_sources.room.entities;
+package edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -8,10 +8,10 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "UserTable")
 public class UserEntity {
     @NonNull @PrimaryKey
+    public String email;
     public String login;
     public String password;
     public double money;
-    public String email;
 
     public UserEntity(){}
 

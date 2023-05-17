@@ -1,4 +1,4 @@
-package edu.poh.samsung_project_final.data.models;
+package edu.poh.samsung_project_final.ui.adapters.data.models;
 
 public class stockSearchModel {
     public String name_of_stock;

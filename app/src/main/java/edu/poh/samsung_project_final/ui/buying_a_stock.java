@@ -1,18 +1,15 @@
 package edu.poh.samsung_project_final.ui;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,13 +26,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.EmptyStackException;
 import java.util.List;
 
 import edu.poh.samsung_project_final.R;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
-import edu.poh.samsung_project_final.data.models.UserInfoModel;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.StockEntity;
+import edu.poh.samsung_project_final.ui.adapters.data.models.UserInfoModel;
 import edu.poh.samsung_project_final.databinding.FragmentBuyingAStockBinding;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
@@ -106,7 +101,6 @@ public class buying_a_stock extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("MyWay", "VolleyError:" + error.toString());
             }
         });
         queque.add(stringRequest);
@@ -130,19 +124,15 @@ public class buying_a_stock extends Fragment {
                         Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
                         return;
                     }
-
                     int count_int = Integer.parseInt(count);
                     double ans = cost_d * (double) count_int;
-                    double money = userViewModel.getMoney();
-                    Log.d("UserBuy", " ");
+                    double money = userViewModel.userEntity.money;
                     if (ans > money) {
                         Toast.makeText(buying_a_stock.this.getActivity(), "Вы превысили ваш бюджет", Toast.LENGTH_SHORT).show();
                     } else {
                         double balance = money - ans;
-                        Log.d("UserBuy", "Buying a stock");
                         if (AllID.isEmpty()) {
                             stockDataViewModel.insertStock(new StockEntity(id_of_stock, name_of_stock, count_int, ans));
-                            Log.d("UserBuy", "Empty " + id_of_stock);
                             updateAll(ans, balance);
                         } else {
                             boolean flag = false;
@@ -150,7 +140,6 @@ public class buying_a_stock extends Fragment {
                                 String id = AllID.get(i);
                                 if (id.equals(id_of_stock)) {
                                     flag = true;
-                                    Log.d("UserBuy", "Update " + id_of_stock);
                                     double price = stockDataViewModel.getPriceById(id);
                                     Integer quantity = stockDataViewModel.getQuantityById(id);
                                     stockDataViewModel.updateById(id_of_stock, quantity + count_int, price + ans);
@@ -160,7 +149,6 @@ public class buying_a_stock extends Fragment {
                             }
                             if (!flag) {
                                 stockDataViewModel.insertStock(new StockEntity(id_of_stock, name_of_stock, count_int, ans));
-                                Log.d("USerBuy", "Else equals " + id_of_stock);
                                 updateAll(ans, balance);
                             }
                         }
@@ -177,7 +165,8 @@ public class buying_a_stock extends Fragment {
     private void updateAll(double ans, double balance){
         userInfoModel.all_stock_price_bought += ans;
         userInfoModel.all_stock_price_online += ans;
-        userViewModel.updateMoney(balance);
+        //userViewModel.updateMoney(balance);
+        userViewModel.userEntity.money = balance;
         navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
     }
 }

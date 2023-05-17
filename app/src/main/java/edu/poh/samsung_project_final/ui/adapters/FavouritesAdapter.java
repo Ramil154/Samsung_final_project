@@ -4,24 +4,15 @@ import static java.lang.Math.abs;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -39,10 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.poh.samsung_project_final.R;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
-import edu.poh.samsung_project_final.data.models.stockSearchModel;
-import edu.poh.samsung_project_final.data.repositories.UserRepository;
-import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.StockEntity;
 
 public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.StockDataHolder> {
     private List<StockEntity> list = new ArrayList();
@@ -81,7 +69,6 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
             String name_of_stock = stockEntity.name_of_stock;
             Integer count = stockEntity.quantity_of_stock_ent;
             double bought_stock = stockEntity.stock_price_when_bought;
-            Log.d("MyLon", id);
             parseStockDataCost(id, holder, count, bought_stock);
             holder.quantity.setText(count + " шт.");
             if (name_of_stock.length() > 30) {
@@ -156,13 +143,11 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
                         try {
                             setStockAndCost(response,holder,count,bought_stock);
                         } catch (JSONException e) {
-                            Log.d("MyLon","Errorrrrrr");
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("MyLon", "VolleyError:" + error.toString());
             }
         });
         queue.add(stringRequest);
@@ -206,7 +191,6 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.St
     }
     @SuppressLint("NotifyDataSetChanged")
     public void setList(List<StockEntity> list){
-        Log.d("MyLon",list.toString());
         this.list = list;
         notifyDataSetChanged();
     }

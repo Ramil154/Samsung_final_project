@@ -14,7 +14,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,18 +34,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.poh.samsung_project_final.R;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
-import edu.poh.samsung_project_final.data.models.UserInfoModel;
-import edu.poh.samsung_project_final.data.models.ValutesModel;
-import edu.poh.samsung_project_final.data.models.stockSearchModel;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.StockEntity;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.UserEntity;
+import edu.poh.samsung_project_final.ui.adapters.data.models.UserInfoModel;
+import edu.poh.samsung_project_final.ui.adapters.data.models.ValutesModel;
 import edu.poh.samsung_project_final.databinding.FragmentMainListOfAppBinding;
-import edu.poh.samsung_project_final.ui.adapters.StockAdapter;
 import edu.poh.samsung_project_final.ui.adapters.ValutesAdapter;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
 import edu.poh.samsung_project_final.ui.view_models.ValutesViewModel;
-import edu.poh.samsung_project_final.ui.view_models.stockSearchViewModel;
 
 
 public class main_list_of_app extends Fragment {
@@ -58,6 +54,7 @@ public class main_list_of_app extends Fragment {
     private ValutesViewModel model = new ValutesViewModel();
     private StockDataViewModel stockDataViewModel;
     private UserInfoModel userInfoModel;
+    private RequestQueue requestQueue;
     private double all_prices_of_stock_online;
     private final List<String> TEXT = Arrays.asList("Канадский доллар","Швейцарский франк","Китайский юань","Евро","Фунт стерлингов",
             "Гонконгский доллар","Японская йена","Турецкая лира","Доллар США");
@@ -81,63 +78,61 @@ public class main_list_of_app extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("UserProblem", "");
         binding.plusSumForStocks.setText(String.format("%.2f",userInfoModel.all_stock_price_online - userInfoModel.all_stock_price_bought) + " руб");
-        Log.d("UserProblem", userInfoModel.all_stock_price_bought + "");
         SumPrecent();
+        requestQueue = Volley.newRequestQueue(requireContext());
         parseValuteData();
         initValuteRecyclerView();
-        userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
+        setUpObservers();
+    }
+
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
+    private void setUpObservers(){
+        all_prices_of_stock_online = 0;
+        final boolean[] flag = {false};
+        binding.userProfileMain.setText("Здравствуйте, " + userViewModel.userEntity.login);
+        binding.sumOfStocks.setText(String.format("%.2f",userViewModel.userEntity.money + userInfoModel.all_stock_price_online) + " руб");
+        List<Double> prices_of_stocks_when_bought = stockDataViewModel.getPricesOfAllStocks();
+        double all_price_of_stock_when_bought = 0;
+        for (int i = 0; i < prices_of_stocks_when_bought.size(); i++) {
+            all_price_of_stock_when_bought += prices_of_stocks_when_bought.get(i);
+        }
+        double finalAll_price_of_stock_when_bought = all_price_of_stock_when_bought;
+        stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
             @Override
-            public void onChanged(UserEntity userEntity) {
-                if(userEntity == null){
-                    binding.userProfileMain.setText("Здравствуйте, " + userViewModel.userEntity.login);
-                    binding.sumOfStocks.setText(String.format("%.2f",userViewModel.userEntity.money + userInfoModel.all_stock_price_online) + " руб");
+            public void onChanged(List<StockEntity> stockEntities) {
+                for (int i = 0; i < stockEntities.size(); i++) {
+                    StockEntity stock = stockEntities.get(i);
+                    parseStockDataCost(stock.id_of_stock, stock.quantity_of_stock_ent);
                 }
-                else {
-                    binding.userProfileMain.setText("Здравствуйте, " + userEntity.login);
-                    binding.sumOfStocks.setText(String.format("%.2f", userEntity.money + userInfoModel.all_stock_price_online) + " руб");
-                }
-                List<Double> prices_of_stocks_when_bought = stockDataViewModel.getPricesOfAllStocks();
-                double all_price_of_stock_when_bought = 0;
-                for (int i = 0; i < prices_of_stocks_when_bought.size(); i++) {
-                    all_price_of_stock_when_bought += prices_of_stocks_when_bought.get(i);
-                }
-                double finalAll_price_of_stock_when_bought = all_price_of_stock_when_bought;
-                stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
-                    @Override
-                    public void onChanged(List<StockEntity> stockEntities) {
-                        for (int i = 0; i < stockEntities.size(); i++) {
-                            StockEntity stock = stockEntities.get(i);
-                            Log.d("UserProblem", i + "");
-                            parseStockDataCost(stock.id_of_stock, stock.quantity_of_stock_ent);
-                        }
-                        new android.os.Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (userInfoModel.all_stock_price_online != all_prices_of_stock_online) {
-                                    if (userInfoModel.all_stock_price_bought != finalAll_price_of_stock_when_bought){
-                                        userInfoModel.all_stock_price_bought = finalAll_price_of_stock_when_bought;
-                                    }
-                                    Log.d("UserProblem", "Catch");
-                                    userInfoModel.all_stock_price_online = all_prices_of_stock_online;
-                                    binding.sumOfStocks.setText(String.format("%.2f",userEntity.money + userInfoModel.all_stock_price_online) + " руб");
-                                    binding.plusSumForStocks.setText(String.format("%.2f", userInfoModel.all_stock_price_online - userInfoModel.all_stock_price_bought) + " руб");
-                                    SumPrecent();
+                if (!flag[0]) {
+                    new android.os.Handler().postDelayed(new Runnable() {
+                        @SuppressLint({"DefaultLocale", "SetTextI18n"})
+                        @Override
+                        public void run() {
+                            if (userInfoModel.all_stock_price_online != all_prices_of_stock_online) {
+                                if (userInfoModel.all_stock_price_bought != finalAll_price_of_stock_when_bought) {
+                                    userInfoModel.all_stock_price_bought = finalAll_price_of_stock_when_bought;
                                 }
+                                userInfoModel.all_stock_price_online = all_prices_of_stock_online;
+                                binding.sumOfStocks.setText(String.format("%.2f", userViewModel.userEntity.money + userInfoModel.all_stock_price_online) + " руб");
+                                binding.plusSumForStocks.setText(String.format("%.2f", userInfoModel.all_stock_price_online - userInfoModel.all_stock_price_bought) + " руб");
+                                SumPrecent();
                             }
-                        }, 1000);
-                    }
-                });
-                all_prices_of_stock_online = 0;
+                        }
+                    }, 2000);
+                    flag[0] = true;
+                }
+
             }
         });
         updateData();
     }
 
+
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void SumPrecent(){
-        if(userInfoModel.all_stock_price_bought == 0){
+        if(userInfoModel.all_stock_price_bought == 0 || (abs(userInfoModel.all_stock_price_online-userInfoModel.all_stock_price_bought) <  0.00001)){
             binding.percentMain.setText("+ 0.00 %");
         }
         else {
@@ -148,7 +143,6 @@ public class main_list_of_app extends Fragment {
 
     private void parseStockDataCost(String sid,Integer quantity) {
         String url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/"+sid+".json";
-        RequestQueue queque = Volley.newRequestQueue(requireContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -162,10 +156,9 @@ public class main_list_of_app extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("MyWay", "VolleyError:" + error.toString());
             }
         });
-        queque.add(stringRequest);
+        requestQueue.add(stringRequest);
     }
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void setStockAndCost(String response,Integer quantity) throws JSONException {
@@ -181,20 +174,18 @@ public class main_list_of_app extends Fragment {
             double cost_d = data_next.optDouble(3);
             double cost_final = cost_d * quantity;
             all_prices_of_stock_online += cost_final;
-            Log.d("UserProblem",  all_prices_of_stock_online + "sms");
         }
     }
 
     private void parseValuteData() {
         String url = "https://iss.moex.com/iss/statistics/engines/futures/markets/indicativerates/securities.json";
-        RequestQueue queque = Volley.newRequestQueue(requireContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             List<ValutesModel> stocks = setValute(response);
-                            model.LiveDataListForValutes.setValue(stocks);
+                            model.LiveDataListForValutes.postValue(stocks);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -202,10 +193,9 @@ public class main_list_of_app extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("MyWay", "VolleyError:" + error.toString());
             }
         });
-        queque.add(stringRequest);
+        requestQueue.add(stringRequest);
     }
 
     @SuppressLint("DefaultLocale")

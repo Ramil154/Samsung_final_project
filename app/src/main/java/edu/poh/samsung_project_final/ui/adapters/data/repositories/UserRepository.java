@@ -1,4 +1,4 @@
-package edu.poh.samsung_project_final.data.repositories;
+package edu.poh.samsung_project_final.ui.adapters.data.repositories;
 
 import android.app.Application;
 
@@ -6,11 +6,11 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-import edu.poh.samsung_project_final.data.data_sources.room.dao.StockDAO;
-import edu.poh.samsung_project_final.data.data_sources.room.dao.UserDAO;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
-import edu.poh.samsung_project_final.data.data_sources.room.root.UserDatabase;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.dao.StockDAO;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.dao.UserDAO;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.StockEntity;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.UserEntity;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.root.UserDatabase;
 
 public class UserRepository {
     StockDAO stockDAO;
@@ -30,6 +30,9 @@ public class UserRepository {
     }
     public void deleteUser(UserEntity userEntity){
         UserDatabase.databaseWriteExecutor.execute(() -> userDAO.delete(userEntity));
+    }
+    public void update(String login, double money, String password){
+        UserDatabase.databaseWriteExecutor.execute(() -> userDAO.update(login,money,password));
     }
     public void updateMoney(double money){
         UserDatabase.databaseWriteExecutor.execute(() -> userDAO.updateMoney(money));

@@ -218,7 +218,6 @@ public class stock_page extends Fragment{
                     cost_first_in_data = cost_f;
                     flag_graph = true;
                 }
-                Log.d("MyWay", String.valueOf(cost_f));
                 graphics.add(new Entry(counter,cost_f));
                 counter++;
                 Dates_onGraph.add(date);

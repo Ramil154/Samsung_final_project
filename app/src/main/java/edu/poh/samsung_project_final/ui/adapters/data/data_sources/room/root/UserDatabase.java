@@ -1,4 +1,4 @@
-package edu.poh.samsung_project_final.data.data_sources.room.root;
+package edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.root;
 
 import android.content.Context;
 
@@ -9,10 +9,10 @@ import androidx.room.RoomDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.poh.samsung_project_final.data.data_sources.room.dao.StockDAO;
-import edu.poh.samsung_project_final.data.data_sources.room.dao.UserDAO;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.dao.StockDAO;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.dao.UserDAO;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.StockEntity;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.UserEntity;
 
 @Database(entities = {UserEntity.class, StockEntity.class}, version = 1)
 public abstract class UserDatabase extends RoomDatabase {

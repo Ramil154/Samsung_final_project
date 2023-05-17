@@ -2,7 +2,6 @@ package edu.poh.samsung_project_final.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -22,19 +20,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
 import edu.poh.samsung_project_final.R;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.StockEntity;
-import edu.poh.samsung_project_final.data.data_sources.room.entities.UserEntity;
-import edu.poh.samsung_project_final.data.models.UserInfoModel;
+import edu.poh.samsung_project_final.ui.adapters.data.models.UserInfoModel;
 import edu.poh.samsung_project_final.databinding.DeleteStockFromFavBinding;
-import edu.poh.samsung_project_final.databinding.FragmentBuyingAStockBinding;
 import edu.poh.samsung_project_final.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
 
@@ -51,6 +47,9 @@ public class DeleteStockFromFav extends Fragment {
     private String cost_of_stock;
     private String quantity;
     private Double cost_d;
+    private FirebaseAuth mAuth;
+    private FirebaseDatabase database;
+    private DatabaseReference databaseReference;
     private UserInfoModel userInfoModel;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -60,6 +59,9 @@ public class DeleteStockFromFav extends Fragment {
         navController = navHostFragment.getNavController();
         userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         userInfoModel = LogoFragment.userInfoModel;
+        mAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference();
         return binding.getRoot();
     }
 
@@ -91,6 +93,12 @@ public class DeleteStockFromFav extends Fragment {
                     else if(count_int == count_of_fav){
                         stockDataViewModel.deleteById(id_of_stock);
                         updateUserMoneyNow(ans);
+                        databaseReference.child("Users")
+                                .child(mAuth.getCurrentUser().getUid())
+                                .child("favourites")
+                                .child(id_of_stock)
+                                .setValue(null);
+
                     }
                     else{
                         double price = stockDataViewModel.getPriceById(id_of_stock);
@@ -107,7 +115,7 @@ public class DeleteStockFromFav extends Fragment {
         });
     }
     private void updateUserMoneyNow(double ans){
-        userViewModel.updateMoney(ans + userViewModel.getMoney());
+        userViewModel.userEntity.money = ans + userViewModel.userEntity.money;
         navController.navigate(R.id.action_delete_stock_from_fav_to_favourites_of_character);
     }
     private void parseStockDataCost(String sid) {
@@ -126,7 +134,6 @@ public class DeleteStockFromFav extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("MyWay", "VolleyError:" + error.toString());
             }
         });
         queque.add(stringRequest);

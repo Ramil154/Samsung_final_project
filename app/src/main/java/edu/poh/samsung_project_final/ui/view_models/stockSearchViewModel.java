@@ -4,9 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import edu.poh.samsung_project_final.data.models.stockSearchModel;
+import edu.poh.samsung_project_final.ui.adapters.data.models.stockSearchModel;
 
 public class stockSearchViewModel extends ViewModel {
     public MutableLiveData<ArrayList<stockSearchModel>> LiveDataListForStocks;

@@ -6,13 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import edu.poh.samsung_project_final.R;
-import edu.poh.samsung_project_final.data.models.stockSearchModel;
+import edu.poh.samsung_project_final.ui.adapters.data.models.stockSearchModel;
 import edu.poh.samsung_project_final.databinding.ListItemOfStockBinding;
 
 public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.StockHolder> {

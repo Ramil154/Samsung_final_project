@@ -1,4 +1,4 @@
-package edu.poh.samsung_project_final.data.data_sources.room.entities;
+package edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;

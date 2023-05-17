@@ -1,4 +1,4 @@
-package edu.poh.samsung_project_final.data.models;
+package edu.poh.samsung_project_final.ui.adapters.data.models;
 
 public class ValutesModel {
     public String name_valute;
