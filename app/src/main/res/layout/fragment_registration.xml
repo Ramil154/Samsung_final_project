@@ -35,7 +35,7 @@
             android:textColorHint="@color/black"
             android:textSize="18sp"
             android:textStyle="normal"
-            android:inputType="text"/>
+            android:inputType="textEmailAddress"/>
 
         <EditText
             android:id="@+id/RegistrationPasswordMemorize"

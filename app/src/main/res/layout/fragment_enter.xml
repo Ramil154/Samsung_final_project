@@ -24,13 +24,13 @@
         android:gravity="center">
 
         <EditText
-            android:id="@+id/LoginEnterCheck"
+            android:id="@+id/EmailEnterCheck"
             android:layout_width="250dp"
             android:layout_height="45dp"
             android:layout_marginTop="207dp"
             android:background="@drawable/bg_rounded_edittext"
             android:gravity="center"
-            android:hint="Введите логин"
+            android:hint="Введите email"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:textSize="18sp"
@@ -46,6 +46,7 @@
             android:textColorHint="@color/black"
             android:gravity="center"
             android:textSize="18sp"
+            android:inputType="textPassword"
             android:textStyle="normal"
             android:layout_marginTop="24dp" />
 
@@ -58,7 +59,7 @@
             android:text="Продолжить"
             android:textSize="18sp"
             android:gravity="center"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textStyle="normal"
             android:textAllCaps="false" />
 
@@ -71,7 +72,7 @@
             android:text="Регистрация"
             android:textSize="18sp"
             android:gravity="center"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textAllCaps="false"
             android:textStyle="normal" />
 
