@@ -1,21 +1,24 @@
-package edu.poh.samsung_project_final;
+package edu.poh.samsung_project_final.ui;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import edu.poh.samsung_project_final.databinding.FragmentRegistrationBinding;
+import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.databinding.FragmentRememberLoginBinding;
+import edu.poh.samsung_project_final.ui.adapters.data.data_sources.room.entities.UserEntity;
 import edu.poh.samsung_project_final.ui.view_models.UserViewModel;
 
 public class RememberLogin extends Fragment {
@@ -46,10 +49,21 @@ public class RememberLogin extends Fragment {
                     Toast.makeText(getContext(), "Вы не ввели имя в поле 'Ввод имени'", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    String login = binding.LoginMemorise.getText().toString();
-                    userViewModel.updateLogin(login);
-                    userViewModel.userEntity.login = login;
+                    userViewModel.updateLogin(binding.LoginMemorise.getText().toString());
+                    userViewModel.userEntity.login = binding.LoginMemorise.getText().toString();
+                    Log.d("LoginUser", userViewModel.userEntity.login);
                     navController.navigate(R.id.action_rememberLogin_to_main_list_of_app);
+//                    userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
+//                        @Override
+//                        public void onChanged(UserEntity userEntity) {
+//                            //userViewModel.userEntity.login = userEntity.login;
+//                            userViewModel.userEntity.email = userEntity.email;
+//                            userViewModel.userEntity.money = userEntity.money;
+//                            userViewModel.userEntity.password = userEntity.password;
+//
+//                        }
+//                    });
+
                 }
             }
         });

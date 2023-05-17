@@ -100,10 +100,15 @@
             app:destination="@id/enter"
             app:popUpTo="@id/my_navigation"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_logoFragment_to_rememberLogin"
+            app:destination="@id/rememberLogin"
+            app:popUpTo="@id/my_navigation"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/rememberLogin"
-        android:name="edu.poh.samsung_project_final.RememberLogin"
+        android:name="edu.poh.samsung_project_final.ui.RememberLogin"
         android:label="RememberLogin" >
         <action
             android:id="@+id/action_rememberLogin_to_main_list_of_app"
