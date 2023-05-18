@@ -13,20 +13,6 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="360dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_rounded_edittext"
-            android:text="Аналитика"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ButtonForChoseToDeleteStock" />
-
         <androidx.cardview.widget.CardView
             android:id="@+id/card_of_graphics"
             android:layout_width="match_parent"
@@ -61,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="2dp"
-                    android:text="+35.65 12 %"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"

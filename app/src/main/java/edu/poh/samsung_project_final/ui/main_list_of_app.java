@@ -120,7 +120,7 @@ public class main_list_of_app extends Fragment {
                                 SumPrecent();
                             }
                         }
-                    }, 2000);
+                    }, 1500);
                     flag[0] = true;
                 }
 
