@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/main_list_of_app"
-        android:name="edu.poh.samsung_project_final.ui.main_list_of_app"
+        android:name="edu.poh.samsung_project_final.ui.ui.main_list_of_app"
         android:label="fragment_main_list_of_app"
         tools:layout="@layout/fragment_main_list_of_app" />
     <fragment
         android:id="@+id/stock_search"
-        android:name="edu.poh.samsung_project_final.ui.stock_search"
+        android:name="edu.poh.samsung_project_final.ui.ui.stock_search"
         android:label="fragment_stock_search"
         tools:layout="@layout/fragment_stock_search" >
         <action
@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/buying_a_stock"
-        android:name="edu.poh.samsung_project_final.ui.buying_a_stock"
+        android:name="edu.poh.samsung_project_final.ui.ui.buying_a_stock"
         android:label="fragment_buying_a_stock"
         tools:layout="@layout/fragment_buying_a_stock" >
         <action
@@ -32,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/enter"
-        android:name="edu.poh.samsung_project_final.ui.enter"
+        android:name="edu.poh.samsung_project_final.ui.ui.enter"
         android:label="fragment_enter"
         tools:layout="@layout/fragment_enter" >
         <action
@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/favourites_of_character"
-        android:name="edu.poh.samsung_project_final.ui.favourites_of_character"
+        android:name="edu.poh.samsung_project_final.ui.ui.favourites_of_character"
         android:label="fragment_favourites_of_character"
         tools:layout="@layout/fragment_favourites_of_character" >
         <action
@@ -53,7 +53,7 @@
     </fragment>
     <fragment
         android:id="@+id/registration"
-        android:name="edu.poh.samsung_project_final.ui.registration"
+        android:name="edu.poh.samsung_project_final.ui.ui.registration"
         android:label="fragment_registration"
         tools:layout="@layout/fragment_registration" >
         <action
@@ -64,7 +64,7 @@
     </fragment>
     <fragment
         android:id="@+id/stock_page"
-        android:name="edu.poh.samsung_project_final.ui.stock_page"
+        android:name="edu.poh.samsung_project_final.ui.ui.stock_page"
         android:label="fragment_stock_page"
         tools:layout="@layout/fragment_stock_page" >
         <action
@@ -76,7 +76,7 @@
     </fragment>
     <fragment
         android:id="@+id/delete_stock_from_fav"
-        android:name="edu.poh.samsung_project_final.ui.DeleteStockFromFav"
+        android:name="edu.poh.samsung_project_final.ui.ui.DeleteStockFromFav"
         android:label="delete_stock"
         tools:layout="@layout/delete_stock_from_fav" >
         <action
@@ -87,7 +87,7 @@
     </fragment>
     <fragment
         android:id="@+id/logoFragment"
-        android:name="edu.poh.samsung_project_final.ui.LogoFragment"
+        android:name="edu.poh.samsung_project_final.ui.ui.LogoFragment"
         android:label="fragment_logo"
         tools:layout="@layout/fragment_logo" >
         <action
@@ -108,7 +108,7 @@
     </fragment>
     <fragment
         android:id="@+id/rememberLogin"
-        android:name="edu.poh.samsung_project_final.ui.RememberLogin"
+        android:name="edu.poh.samsung_project_final.ui.ui.RememberLogin"
         android:label="RememberLogin" >
         <action
             android:id="@+id/action_rememberLogin_to_main_list_of_app"

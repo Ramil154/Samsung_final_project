@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.stock_search"
+    tools:context=".ui.ui.stock_search"
     android:background="@color/Yellow_200">
 
     <EditText
