@@ -33,7 +33,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import edu.poh.samsung_project_final.R;
-import edu.poh.samsung_project_final.ui.data.room.DataLoadCallback;
+import edu.poh.samsung_project_final.ui.data.DataLoadCallback;
 import edu.poh.samsung_project_final.ui.data.room.entities.StockEntity;
 import edu.poh.samsung_project_final.ui.data.room.entities.UserEntity;
 import edu.poh.samsung_project_final.ui.data.models.UserInfoModel;

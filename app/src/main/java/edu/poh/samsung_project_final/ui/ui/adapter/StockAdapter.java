@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import edu.poh.samsung_project_final.R;
+import edu.poh.samsung_project_final.ui.data.models.parseStockInfoModel;
 import edu.poh.samsung_project_final.ui.data.models.stockSearchModel;
 import edu.poh.samsung_project_final.databinding.ListItemOfStockBinding;
 
-public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.StockHolder> {
+public class StockAdapter extends ListAdapter<parseStockInfoModel, StockAdapter.StockHolder> {
     Listener listener;
     public StockAdapter(@NonNull StockComparator stockComparator, Listener listener) {
         super(stockComparator);
@@ -39,7 +40,7 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
         }
         ListItemOfStockBinding binding = ListItemOfStockBinding.bind(itemView);
         @SuppressLint("SetTextI18n")
-        private void bind(stockSearchModel item, Listener listener){
+        private void bind(parseStockInfoModel item, Listener listener){
             binding.whichStockIsHere.setText(item.name_of_stock);
             binding.costOfStockWhichIsHere.setText(item.cost_of_stock+" руб");
             binding.cardViewRecycler.setOnClickListener(new View.OnClickListener() {
@@ -50,21 +51,21 @@ public class StockAdapter extends ListAdapter<stockSearchModel, StockAdapter.Sto
             });
         }
     }
-    public static class StockComparator extends DiffUtil.ItemCallback<stockSearchModel>{
+    public static class StockComparator extends DiffUtil.ItemCallback<parseStockInfoModel>{
 
         @Override
-        public boolean areItemsTheSame(@NonNull stockSearchModel oldItem, @NonNull stockSearchModel newItem) {
+        public boolean areItemsTheSame(@NonNull parseStockInfoModel oldItem, @NonNull parseStockInfoModel newItem) {
             return oldItem == newItem;
         }
 
         @SuppressLint("DiffUtilEquals")
         @Override
-        public boolean areContentsTheSame(@NonNull stockSearchModel oldItem, @NonNull stockSearchModel newItem) {
+        public boolean areContentsTheSame(@NonNull parseStockInfoModel oldItem, @NonNull parseStockInfoModel newItem) {
             return oldItem == newItem;
         }
     }
     public interface Listener{
-        void onClickNow(stockSearchModel item);
+        void onClickNow(parseStockInfoModel item);
     }
 
 }

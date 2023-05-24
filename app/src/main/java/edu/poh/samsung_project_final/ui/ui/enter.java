@@ -25,7 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import edu.poh.samsung_project_final.R;
-import edu.poh.samsung_project_final.ui.data.room.DataLoadCallback;
+import edu.poh.samsung_project_final.ui.data.DataLoadCallback;
 import edu.poh.samsung_project_final.ui.data.room.entities.StockEntity;
 import edu.poh.samsung_project_final.databinding.FragmentEnterBinding;
 import edu.poh.samsung_project_final.ui.data.room.entities.UserEntity;

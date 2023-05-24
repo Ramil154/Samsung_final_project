@@ -32,6 +32,7 @@ import edu.poh.samsung_project_final.ui.data.room.entities.StockEntity;
 import edu.poh.samsung_project_final.databinding.ActivityMainBinding;
 import edu.poh.samsung_project_final.ui.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.ui.view_models.UserViewModel;
+import edu.poh.samsung_project_final.ui.ui.view_models.stockSearchViewModel;
 
 public class MainActivity extends AppCompatActivity {
     public ActivityMainBinding binding;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private NavController navController;
     private DatabaseReference databaseReference;
+    private stockSearchViewModel model;
     private LifecycleOwner lifecycleOwner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         databaseReference = database.getReference();
         mAuth = FirebaseAuth.getInstance();
         stockDataViewModel = new ViewModelProvider(this).get(StockDataViewModel.class);
+        model = new ViewModelProvider(this).get(stockSearchViewModel.class);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.main_list_of_app, R.id.favourites_of_character, R.id.stock_search)
