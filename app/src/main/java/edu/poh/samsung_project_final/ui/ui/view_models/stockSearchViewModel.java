@@ -1,6 +1,7 @@
 package edu.poh.samsung_project_final.ui.ui.view_models;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.poh.samsung_project_final.ui.data.DataLoadCallback;
+import edu.poh.samsung_project_final.ui.data.models.UserInfoModel;
 import edu.poh.samsung_project_final.ui.data.models.parseStockInfoModel;
 import edu.poh.samsung_project_final.ui.data.models.stockSearchModel;
 
@@ -51,6 +53,11 @@ public class stockSearchViewModel extends AndroidViewModel implements parseStock
         InfoModel.getAllFroGraph(id,context, callback);
     }
 
+    public void setAllForBuying(String id, Context context, DataLoadCallback callback){
+        InfoModel.setListener(this);
+        InfoModel.getAllForBuying(id,context, callback);
+    }
+
     @Override
     public void onDataLoaded(ArrayList<parseStockInfoModel> data) {
         LiveDataListForStocks.setValue(data);
@@ -73,5 +80,9 @@ public class stockSearchViewModel extends AndroidViewModel implements parseStock
     public void onDataLoadedGraphs(List<Entry> graphics) {
         this.graphics.clear();
         this.graphics.addAll(graphics);
+    }
+
+    public void buyingStock(Activity activity, Double cost_d, String name_of_stock, String id_of_stock, List<String> AllID, int count_int, UserViewModel userViewModel, StockDataViewModel stockDataViewModel, UserInfoModel userInfoModel){
+        InfoModel.buyingStock(activity,cost_d,name_of_stock,id_of_stock,AllID,count_int,userViewModel,stockDataViewModel,userInfoModel);
     }
 }

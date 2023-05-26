@@ -3,9 +3,11 @@ package edu.poh.samsung_project_final.ui.data.models;
 import static java.lang.Math.abs;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,8 +28,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.ui.data.DataLoadCallback;
 import edu.poh.samsung_project_final.ui.data.OnDataLoadedListener;
+import edu.poh.samsung_project_final.ui.data.room.entities.StockEntity;
+import edu.poh.samsung_project_final.ui.ui.buying_a_stock;
+import edu.poh.samsung_project_final.ui.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.ui.view_models.UserViewModel;
 import edu.poh.samsung_project_final.ui.ui.view_models.stockSearchViewModel;
 
@@ -242,5 +248,46 @@ public class parseStockInfoModel{
         String searchDate = year + "-0" + month + "-" + day;
         getResult(id,searchDate,context);
         parseStockDataCost(id, context, callback);
+    }
+
+    public void getAllForBuying(String id, Context context, DataLoadCallback callback){
+        parseStockDataCost(id,context,callback);
+    }
+
+    public void buyingStock(Activity activity,Double cost_d, String name_of_stock, String id_of_stock, List<String> AllID, int count_int, UserViewModel userViewModel, StockDataViewModel stockDataViewModel,UserInfoModel userInfoModel){
+        double ans = cost_d * (double) count_int;
+        double money = userViewModel.userEntity.money;
+        if (ans > money) {
+            Toast.makeText(activity, "Вы превысили ваш бюджет", Toast.LENGTH_SHORT).show();
+        } else {
+            double balance = money - ans;
+            if (AllID.isEmpty()) {
+                stockDataViewModel.insertStock(new StockEntity(id_of_stock, name_of_stock, count_int, ans));
+                updateAll(ans, balance, userInfoModel, userViewModel);
+            } else {
+                boolean flag = false;
+                for (int i = 0; i < AllID.size(); i++) {
+                    String id = AllID.get(i);
+                    if (id.equals(id_of_stock)) {
+                        flag = true;
+                        double price = stockDataViewModel.getPriceById(id);
+                        Integer quantity = stockDataViewModel.getQuantityById(id);
+                        stockDataViewModel.updateById(id_of_stock, quantity + count_int, price + ans);
+                        updateAll(ans, balance,userInfoModel,userViewModel);
+                        break;
+                    }
+                }
+                if (!flag) {
+                    stockDataViewModel.insertStock(new StockEntity(id_of_stock, name_of_stock, count_int, ans));
+                    updateAll(ans, balance, userInfoModel, userViewModel);
+                }
+            }
+        }
+    }
+
+    private void updateAll(double ans, double balance, UserInfoModel userInfoModel, UserViewModel userViewModel){
+        userInfoModel.all_stock_price_bought += ans;
+        userInfoModel.all_stock_price_online += ans;
+        userViewModel.userEntity.money = balance;
     }
 }
