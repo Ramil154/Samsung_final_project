@@ -191,11 +191,16 @@ public class parseStockInfoModel{
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        try {
-                            setStockAndCost(response, callback);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        new android.os.Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    setStockAndCost(response, callback);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        },200);
                     }
                 }, new Response.ErrorListener() {
             @Override

@@ -6,10 +6,12 @@ import static java.lang.Math.log;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -19,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -78,6 +81,9 @@ public class stock_page extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        binding.cardOfGraphics.setVisibility(View.INVISIBLE);
+        binding.progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(requireContext(), R.color.Blue_400), PorterDuff.Mode.SRC_IN);
+        binding.progressBar.setVisibility(View.VISIBLE);
         graphics.clear();
         Dates_onGraph.clear();
         final String[] cost = {" "};
@@ -89,13 +95,14 @@ public class stock_page extends Fragment{
                 for (parseStockInfoModel parse: model.stock_page_list){
                     Dates_onGraph.addAll(model.Dates_onGraph);
                     graphics.addAll(model.graphics);
+                    cost[0] = parse.stock_page_cost_of_stock;
                     Log.d("StockPage","this");
                     binding.stockCostInGraphicsDate.setText(parse.stock_page_cost_of_stock);
                     System.out.println("BINDING   " + parse.stock_page_name_of_stock);
                     binding.stockSPageName.setText(parse.stock_page_name_of_stock);
                     binding.plusOfStockDateAndPercent.setTextColor(Color.parseColor(parse.stock_page_colour));
                     binding.plusOfStockDateAndPercent.setText(parse.stock_page_persent_str);
-                    cost[0] = parse.stock_page_cost_of_stock;
+
 
                 }
             }
@@ -109,6 +116,8 @@ public class stock_page extends Fragment{
             @Override
             public void run() {
                 setGraph(binding.graphicOfStockMonth,graphics,"Цена акций за месяц", cost[0]);
+                binding.progressBar.setVisibility(View.GONE);
+                binding.cardOfGraphics.setVisibility(View.VISIBLE);
             }
         },800);
         binding.ButtonForChoseToByuingStock.setOnClickListener(new View.OnClickListener() {
@@ -172,7 +181,7 @@ public class stock_page extends Fragment{
                 float xValue = e.getX();
                 int x = Math.round(xValue);
                 float yValue = e.getY();
-                binding.plusOfStockDateAndPercent.setVisibility(View.GONE);
+                binding.plusOfStockDateAndPercent.setVisibility(View.INVISIBLE);
                 binding.stockCostInGraphicsDate.setText(yValue + "руб - " + Dates_onGraph.get(x));
             }
             @SuppressLint("SetTextI18n")

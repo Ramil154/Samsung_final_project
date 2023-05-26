@@ -49,6 +49,9 @@ public class stockSearchViewModel extends AndroidViewModel implements parseStock
     }
 
     public void setAllForStockPage(String id, Context context, DataLoadCallback callback){
+        Dates_onGraph.clear();
+        graphics.clear();
+        stock_page_list.clear();
         InfoModel.setListener(this);
         InfoModel.getAllFroGraph(id,context, callback);
     }
