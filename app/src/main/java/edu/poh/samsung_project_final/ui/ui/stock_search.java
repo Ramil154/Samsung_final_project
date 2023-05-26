@@ -77,10 +77,10 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
     private void filter(String text){
         ArrayList<parseStockInfoModel> places = new ArrayList<>();
         for(parseStockInfoModel stock: final_list){
-            if(stock.name_of_stock.toLowerCase().contains(text.toLowerCase())){
+            if(stock.stock_search_name_of_stock.toLowerCase().contains(text.toLowerCase())){
                 places.add(stock);
             }
-            else if(stock.id_of_stock.contains(text)){
+            else if(stock.stock_search_id_of_stock.contains(text)){
                 places.add(stock);
             }
         }
@@ -110,7 +110,6 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
         model.LiveDataListForStocks.observe(getViewLifecycleOwner(), new Observer<ArrayList<parseStockInfoModel>>() {
             @Override
             public void onChanged(ArrayList<parseStockInfoModel> places) {
-                Log.d("Final_list", places.toString());
                 final_list = places;
                 adapter.submitList(places);
             }
@@ -130,10 +129,11 @@ public class stock_search extends Fragment implements StockAdapter.Listener {
     @Override
     public void onClickNow(parseStockInfoModel item) {
         Bundle bundle = new Bundle();
-        bundle.putString(KEY_ID,item.id_of_stock);
+        bundle.putString(KEY_ID,item.stock_search_id_of_stock);
         bundle.putString(CHECK,CHECK_STRING);
         stock_page fragment = new stock_page();
         fragment.setArguments(bundle);
+        System.out.println(item.stock_search_id_of_stock);
         navController.navigate(R.id.action_stock_search_to_stock_page, bundle);
         //fragmentManager.beginTransaction().replace(R.id.nav_host_fragment_activity_main,fragment).addToBackStack("").commit();
     }

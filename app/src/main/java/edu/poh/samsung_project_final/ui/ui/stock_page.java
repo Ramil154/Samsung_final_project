@@ -1,6 +1,7 @@
 package edu.poh.samsung_project_final.ui.ui;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.log;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -42,6 +44,9 @@ import java.util.List;
 
 import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.databinding.FragmentStockPageBinding;
+import edu.poh.samsung_project_final.ui.data.DataLoadCallback;
+import edu.poh.samsung_project_final.ui.data.models.parseStockInfoModel;
+import edu.poh.samsung_project_final.ui.ui.view_models.stockSearchViewModel;
 
 public class stock_page extends Fragment{
     private FragmentStockPageBinding binding;
@@ -50,13 +55,11 @@ public class stock_page extends Fragment{
     private final String COUNT_ID = "3";
     private final String CHECK_STRING = "true";
     private NavHostFragment navHostFragment;
-    private String id;
-    private float cost_first_in_data;
+    private stockSearchViewModel model;
     private NavController navController;
-    private boolean flag_graph = false;
-    private String cost;
     private List<Entry> graphics = new ArrayList<>();
     private List<String> Dates_onGraph = new ArrayList<>();
+
     public static stock_page newInstance() {
         return null;
     }
@@ -68,7 +71,7 @@ public class stock_page extends Fragment{
         binding = FragmentStockPageBinding.inflate(inflater, container, false);
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
-
+        model = new ViewModelProvider(getActivity()).get(stockSearchViewModel.class);
         return binding.getRoot();
     }
 
@@ -77,24 +80,34 @@ public class stock_page extends Fragment{
         super.onViewCreated(view, savedInstanceState);
         graphics.clear();
         Dates_onGraph.clear();
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH); // Обратите внимание, что месяцы начинаются с 0
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        String searchDate = year + "-0" + month + "-" + day;
+        final String[] cost = {" "};
         Bundle args = getArguments();
+        String id = args.getString(KEY_ID);
+        model.setAllForStockPage(id, requireContext(), new DataLoadCallback() {
+            @Override
+            public void onDataLoaded() {
+                for (parseStockInfoModel parse: model.stock_page_list){
+                    Log.d("StockPage","this");
+                    binding.stockCostInGraphicsDate.setText(parse.stock_page_cost_of_stock);
+                    System.out.println("BINDING   " + parse.stock_page_name_of_stock);
+                    binding.stockSPageName.setText(parse.stock_page_name_of_stock);
+                    binding.plusOfStockDateAndPercent.setTextColor(Color.parseColor(parse.stock_page_colour));
+                    binding.plusOfStockDateAndPercent.setText(parse.stock_page_persent_str);
+                    cost[0] = parse.stock_page_cost_of_stock;
+                    Dates_onGraph.addAll(model.Dates_onGraph);
+                    graphics.addAll(model.graphics);
+                }
+            }
+        });
         String check = args.getString(CHECK);
         String quantity = args.getString(COUNT_ID);
         if(!check.equals(CHECK_STRING)){
             binding.ButtonForChoseToDeleteStock.setVisibility(View.GONE);
         }
-        id = args.getString(KEY_ID);
-        getResult(id,searchDate);
-        parseStockDataCost(id);
         new android.os.Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                setGraph(binding.graphicOfStockMonth,graphics,"Цена акций за месяц");
+                setGraph(binding.graphicOfStockMonth,graphics,"Цена акций за месяц", cost[0]);
             }
         },500);
         binding.ButtonForChoseToByuingStock.setOnClickListener(new View.OnClickListener() {
@@ -119,14 +132,14 @@ public class stock_page extends Fragment{
             }
         });
     }
-    private void setGraph(LineChart graph, List<Entry> data, String label){
+    private void setGraph(LineChart graph, List<Entry> data, String label, String cost){
         // Настройка данных графика
         LineDataSet dataSet = new LineDataSet(data, label);
-        dataSet.setColor(R.color.Blue_400); // Задаем цвет линии
-        dataSet.setCircleColor(R.color.Blue_400); // Задаем цвет точек
-        dataSet.setLineWidth(2f); // Задаем толщину линии
-        dataSet.setCircleRadius(4f); // Задаем радиус точек
-        dataSet.setDrawValues(false); // Отключаем отображение значений точек
+        dataSet.setColor(R.color.Blue_400);
+        dataSet.setCircleColor(R.color.Blue_400);
+        dataSet.setLineWidth(2f);
+        dataSet.setCircleRadius(4f);
+        dataSet.setDrawValues(false);
         dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
         LineData lineData = new LineData(dataSet);
@@ -155,12 +168,9 @@ public class stock_page extends Fragment{
             @SuppressLint("SetTextI18n")
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                // Получаем информацию о выбранной точке
                 float xValue = e.getX();
                 int x = Math.round(xValue);
                 float yValue = e.getY();
-                //String date = Dates_onGraph.get(xValue);
-                //Toast.makeText(getContext(), "Значение: " + yValue + " "+ x, Toast.LENGTH_SHORT).show();
                 binding.plusOfStockDateAndPercent.setVisibility(View.GONE);
                 binding.stockCostInGraphicsDate.setText(yValue + "руб - " + Dates_onGraph.get(x));
             }
@@ -171,121 +181,7 @@ public class stock_page extends Fragment{
                 binding.stockCostInGraphicsDate.setText(cost + " руб");
             }
         });
-
         graph.invalidate();
-    }
-
-    private void getResult(String id, String searchDate){
-        String url = "https://iss.moex.com/iss/history/engines/stock/markets/shares/securities/"+id+".json?from="+searchDate;
-        RequestQueue queque = Volley.newRequestQueue(requireContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.GET,url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try{
-                            parseHistory(response);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.d("MyWay","Error");
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("MyWay", "VolleyError:" + error.toString());
-            }
-        });
-        queque.add(stringRequest);
-    }
-
-    private void parseHistory(String response) throws JSONException{
-        JSONObject obj = new JSONObject(response);
-        JSONObject history = obj.getJSONObject("history");
-        JSONArray data = history.getJSONArray("data");
-        int counter = 0;
-        for (int i = 0; i < data.length(); i++){
-            JSONArray mas = data.getJSONArray(i);
-            Double cost_history = mas.optDouble(9);
-            String date = mas.getString(1);
-            if(Double.isNaN(cost_history)){}
-            else{
-                String cost =  cost_history.toString();
-                float cost_f = Float.parseFloat(cost);
-                if (!flag_graph){
-                    cost_first_in_data = cost_f;
-                    flag_graph = true;
-                }
-                graphics.add(new Entry(counter,cost_f));
-                counter++;
-                Dates_onGraph.add(date);
-            }
-        }
-    }
-
-    @SuppressLint({"SetTextI18n", "DefaultLocale"})
-    private void setStockAndCost(String response) throws JSONException {
-        JSONObject jsonObject = new JSONObject(response);
-        JSONObject obj = jsonObject.getJSONObject("securities");
-        JSONArray data = obj.getJSONArray("data");
-        for (int i = 0;i < data.length(); i++){
-            JSONArray data_next = data.getJSONArray(i);
-            String boardid = data_next.getString(1);
-            if (!boardid.equals("TQBR")){
-                continue;
-            }
-            String name = data_next.getString(9);
-            Double cost_d = data_next.optDouble(3);
-            cost = cost_d.toString();
-            binding.stockSPageName.setText(name);
-            binding.stockCostInGraphicsDate.setText(cost + " руб");
-            new android.os.Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    double ans = cost_d - cost_first_in_data;
-                    String answer;
-                    if (cost_d < 5){
-                        answer = String.format("%.4f",abs(ans));
-                    }
-                    else{
-                        answer = String.format("%.2f",abs(ans));
-                    }
-                    double percent_of_diff = ((ans) / cost_d) * 100.0;
-                    if (percent_of_diff < 0.0){
-                        binding.plusOfStockDateAndPercent.setTextColor(Color.parseColor("#D41307"));
-                        String persent_str = String.format("%.2f",abs(percent_of_diff));
-                        binding.plusOfStockDateAndPercent.setText("- " + answer + " руб" + " " + persent_str+" %");
-                    }
-                    else{
-                        binding.plusOfStockDateAndPercent.setTextColor(Color.parseColor("#07D434"));
-                        String persent_str = String.format("%.2f",percent_of_diff);
-                        binding.plusOfStockDateAndPercent.setText("+ " + answer + " руб" + " " + persent_str+" %");
-                    }
-                }
-            },500);
-            //binding.plusOfStockDateAndPercent.setText(String.format("%.2f",cost_first_in_data - cost_d) + "руб");
-        }
-    }
-
-    private void parseStockDataCost(String sid) {
-        String url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/"+sid+".json";
-        RequestQueue queque = Volley.newRequestQueue(requireContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            setStockAndCost(response);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("MyWay", "VolleyError:" + error.toString());
-            }
-        });
-        queque.add(stringRequest);
     }
 
 

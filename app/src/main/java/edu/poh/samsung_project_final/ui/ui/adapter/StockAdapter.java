@@ -41,8 +41,8 @@ public class StockAdapter extends ListAdapter<parseStockInfoModel, StockAdapter.
         ListItemOfStockBinding binding = ListItemOfStockBinding.bind(itemView);
         @SuppressLint("SetTextI18n")
         private void bind(parseStockInfoModel item, Listener listener){
-            binding.whichStockIsHere.setText(item.name_of_stock);
-            binding.costOfStockWhichIsHere.setText(item.cost_of_stock+" руб");
+            binding.whichStockIsHere.setText(item.stock_search_name_of_stock);
+            binding.costOfStockWhichIsHere.setText(item.stock_search_cost_of_stock+" руб");
             binding.cardViewRecycler.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
