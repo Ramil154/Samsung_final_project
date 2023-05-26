@@ -1,9 +1,11 @@
 package edu.poh.samsung_project_final.ui.ui;
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -60,6 +62,7 @@ public class enter extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        binding.progressBarEnter.setVisibility(View.GONE);
         binding.RegistrationNextToApp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +85,10 @@ public class enter extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
+                                binding.GoNextToApp.setVisibility(View.GONE);
+                                binding.RegistrationNextToApp.setVisibility(View.GONE);
+                                binding.progressBarEnter.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(requireContext(), R.color.Blue_400), PorterDuff.Mode.SRC_IN);
+                                binding.progressBarEnter.setVisibility(View.VISIBLE);
                                 userViewModel.uploadUserDataFromFireBase(requireContext(),new DataLoadCallback() {
                                     @Override
                                     public void onDataLoaded() {
