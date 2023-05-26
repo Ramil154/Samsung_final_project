@@ -24,6 +24,7 @@ import edu.poh.samsung_project_final.databinding.FragmentFavouritesOfCharacterBi
 import edu.poh.samsung_project_final.ui.ui.adapter.FavouritesAdapter;
 import edu.poh.samsung_project_final.ui.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.ui.view_models.UserViewModel;
+import edu.poh.samsung_project_final.ui.ui.view_models.stockSearchViewModel;
 
 
 public class favourites_of_character extends Fragment implements FavouritesAdapter.ListenerFavourites {
@@ -35,6 +36,7 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
     private final String COUNT_ID = "3";
     private final String CHECK_STRING = "true";
     private StockDataViewModel viewModel;
+    private stockSearchViewModel model;
     private FragmentFavouritesOfCharacterBinding binding;
     private UserViewModel userViewModel;
     private StockDataViewModel stockDataViewModel;
@@ -53,6 +55,7 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
         adapter = new FavouritesAdapter(this);
         userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         stockDataViewModel = new ViewModelProvider(getActivity()).get(StockDataViewModel.class);
+        model = new ViewModelProvider(getActivity()).get(stockSearchViewModel.class);
         balance = userViewModel.userEntity.money;
         stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
             @Override
@@ -73,13 +76,12 @@ public class favourites_of_character extends Fragment implements FavouritesAdapt
     private void initStockRecyclerView(){
         binding.stockRecyclerViewFavourites.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.stockRecyclerViewFavourites.setAdapter(adapter);
-        StockDataViewModel stockDataViewModel = new ViewModelProvider(this).get(StockDataViewModel.class);
-        viewModel = stockDataViewModel;
     }
     private void updateData(){
-        viewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
+        stockDataViewModel.getIdOfStock().observe(getViewLifecycleOwner(), new Observer<List<StockEntity>>() {
             @SuppressLint("SetTextI18n")
             public void onChanged(List<StockEntity> stockEntities) {
+                adapter.setViewModel(model);
                 adapter.setBalance(balance);
                 adapter.setContext(getContext());
                 adapter.setList(stockEntities);

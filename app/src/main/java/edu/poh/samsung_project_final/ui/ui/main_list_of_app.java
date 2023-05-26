@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.poh.samsung_project_final.R;
+import edu.poh.samsung_project_final.ui.data.DataLoadCallback;
 import edu.poh.samsung_project_final.ui.data.room.entities.StockEntity;
 import edu.poh.samsung_project_final.ui.data.models.UserInfoModel;
 import edu.poh.samsung_project_final.ui.data.models.ValutesModel;
@@ -42,6 +43,7 @@ import edu.poh.samsung_project_final.ui.ui.adapter.ValutesAdapter;
 import edu.poh.samsung_project_final.ui.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.ui.view_models.UserViewModel;
 import edu.poh.samsung_project_final.ui.ui.view_models.ValutesViewModel;
+import edu.poh.samsung_project_final.ui.ui.view_models.stockSearchViewModel;
 
 
 public class main_list_of_app extends Fragment {
@@ -50,10 +52,10 @@ public class main_list_of_app extends Fragment {
     private UserViewModel userViewModel;
     private ValutesAdapter adapter;
     private NavController navController;
-    private ValutesViewModel model = new ValutesViewModel();
     private StockDataViewModel stockDataViewModel;
+    private stockSearchViewModel search_model;
+    private ValutesViewModel valutesViewModel;
     private UserInfoModel userInfoModel;
-    private RequestQueue requestQueue;
     private double all_prices_of_stock_online;
     private final List<String> TEXT = Arrays.asList("Канадский доллар","Швейцарский франк","Китайский юань","Евро","Фунт стерлингов",
             "Гонконгский доллар","Японская йена","Турецкая лира","Доллар США");
@@ -69,6 +71,8 @@ public class main_list_of_app extends Fragment {
         navController = navHostFragment.getNavController();
         userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         stockDataViewModel = new ViewModelProvider(getActivity()).get(StockDataViewModel.class);
+        search_model = new ViewModelProvider(getActivity()).get(stockSearchViewModel.class);
+        valutesViewModel = new ViewModelProvider(this).get(ValutesViewModel.class);
         userInfoModel = LogoFragment.userInfoModel;
         return binding.getRoot();
     }
@@ -79,10 +83,15 @@ public class main_list_of_app extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         binding.plusSumForStocks.setText(String.format("%.2f",userInfoModel.all_stock_price_online - userInfoModel.all_stock_price_bought) + " руб");
         SumPrecent();
-        requestQueue = Volley.newRequestQueue(requireContext());
-        parseValuteData();
-        initValuteRecyclerView();
         setUpObservers();
+        valutesViewModel.parseValutes(requireContext(), new DataLoadCallback() {
+            @Override
+            public void onDataLoaded() {
+                initValuteRecyclerView();
+                updateData();
+            }
+        });
+
     }
 
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
@@ -102,7 +111,12 @@ public class main_list_of_app extends Fragment {
             public void onChanged(List<StockEntity> stockEntities) {
                 for (int i = 0; i < stockEntities.size(); i++) {
                     StockEntity stock = stockEntities.get(i);
-                    parseStockDataCost(stock.id_of_stock, stock.quantity_of_stock_ent);
+                    valutesViewModel.getOnlineCost(requireContext(), stock.id_of_stock, stock.quantity_of_stock_ent, new DataLoadCallback() {
+                        @Override
+                        public void onDataLoaded() {
+                            all_prices_of_stock_online += valutesViewModel.getCostOnlineStocks();
+                        }
+                    });
                 }
                 if (!flag[0]) {
                     new android.os.Handler().postDelayed(new Runnable() {
@@ -119,13 +133,12 @@ public class main_list_of_app extends Fragment {
                                 SumPrecent();
                             }
                         }
-                    }, 1500);
+                    }, 1000);
                     flag[0] = true;
                 }
 
             }
         });
-        updateData();
     }
 
 
@@ -140,91 +153,14 @@ public class main_list_of_app extends Fragment {
         }
     }
 
-    private void parseStockDataCost(String sid,Integer quantity) {
-        String url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/"+sid+".json";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            setStockAndCost(response,quantity);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        });
-        requestQueue.add(stringRequest);
-    }
-    @SuppressLint({"SetTextI18n", "DefaultLocale"})
-    private void setStockAndCost(String response,Integer quantity) throws JSONException {
-        JSONObject jsonObject = new JSONObject(response);
-        JSONObject obj = jsonObject.getJSONObject("securities");
-        JSONArray data = obj.getJSONArray("data");
-        for (int i = 0; i < data.length(); i++) {
-            JSONArray data_next = data.getJSONArray(i);
-            String boardid = data_next.getString(1);
-            if (!boardid.equals("TQBR")) {
-                continue;
-            }
-            double cost_d = data_next.optDouble(3);
-            double cost_final = cost_d * quantity;
-            all_prices_of_stock_online += cost_final;
-        }
-    }
-
-    private void parseValuteData() {
-        String url = "https://iss.moex.com/iss/statistics/engines/futures/markets/indicativerates/securities.json";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            List<ValutesModel> stocks = setValute(response);
-                            model.LiveDataListForValutes.postValue(stocks);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        });
-        requestQueue.add(stringRequest);
-    }
-
-    @SuppressLint("DefaultLocale")
-    private List<ValutesModel> setValute(String response) throws JSONException {
-        List<ValutesModel> titles = new ArrayList<>();
-        JSONObject obj = new JSONObject(response);
-        JSONObject description = obj.getJSONObject("securities");
-        JSONArray data = description.getJSONArray("data");
-        for (int i = 0;i < data.length(); i++){
-            JSONArray valute = data.getJSONArray(i);
-            Double cost_d = valute.optDouble(3);
-            if(Double.isNaN(cost_d)){}
-            else{
-                String cost = cost_d.toString();
-                titles.add(new ValutesModel(TEXT.get(i),valute.getString(2),cost));
-            }
-        }
-        return titles;
-    }
-
     private void initValuteRecyclerView(){
         binding.valutesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new ValutesAdapter();
         binding.valutesRecyclerView.setAdapter(adapter);
-        ValutesViewModel valutesViewModel = new ViewModelProvider(this).get(ValutesViewModel.class);
-        model = valutesViewModel;
     }
 
     private void updateData(){
-        model.LiveDataListForValutes.observe(getViewLifecycleOwner(), new Observer<List<ValutesModel>>() {
+        valutesViewModel.LiveDataListForValutes.observe(getViewLifecycleOwner(), new Observer<List<ValutesModel>>() {
             @Override
             public void onChanged(List<ValutesModel> places) {
                 adapter.setList(places);

@@ -51,7 +51,6 @@ public class ValutesAdapter extends RecyclerView.Adapter<ValutesAdapter.ValuteDa
             cost_valute = (TextView) itemView.findViewById(R.id.cost_of_valutes_which_is_here);
 
         }
-
         @Override
         public void onClick(View v) {
 
