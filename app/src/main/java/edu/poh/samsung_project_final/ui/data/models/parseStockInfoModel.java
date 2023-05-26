@@ -19,12 +19,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.data.Entry;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -254,7 +258,13 @@ public class parseStockInfoModel{
         parseStockDataCost(id,context,callback);
     }
 
-    public void buyingStock(Activity activity,Double cost_d, String name_of_stock, String id_of_stock, List<String> AllID, int count_int, UserViewModel userViewModel, StockDataViewModel stockDataViewModel,UserInfoModel userInfoModel){
+    public void buyingStock(Activity activity,Double cost_d, String name_of_stock, String id_of_stock, List<String> AllID, String count, UserViewModel userViewModel, StockDataViewModel stockDataViewModel,UserInfoModel userInfoModel){
+        char symbol = count.charAt(0);
+        if (symbol == '0' || symbol == '.' || symbol == ',') {
+            Toast.makeText(activity, "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int count_int = Integer.parseInt(count);
         double ans = cost_d * (double) count_int;
         double money = userViewModel.userEntity.money;
         if (ans > money) {
@@ -289,5 +299,42 @@ public class parseStockInfoModel{
         userInfoModel.all_stock_price_bought += ans;
         userInfoModel.all_stock_price_online += ans;
         userViewModel.userEntity.money = balance;
+    }
+
+    public void deleteStock(Activity activity,Double cost_d, String count, String id_of_stock,int count_of_fav, UserViewModel userViewModel, StockDataViewModel stockDataViewModel,UserInfoModel userInfoModel){
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference();
+        char symbol = count.charAt(0);
+        if (symbol == '0' || symbol == '.' || symbol == ','){
+            Toast.makeText(activity, "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int count_int = Integer.parseInt(count);
+        double ans = cost_d * count_int;
+        if (count_int > count_of_fav){
+            Toast.makeText(activity, "Вы указали количество акций большее, чем у вас в избранных", Toast.LENGTH_SHORT).show();
+        }
+        else if(count_int == count_of_fav){
+            stockDataViewModel.deleteById(id_of_stock);
+            updateUserMoneyNow(ans, userViewModel);
+            databaseReference.child("Users")
+                    .child(mAuth.getCurrentUser().getUid())
+                    .child("favourites")
+                    .child(id_of_stock)
+                    .setValue(null);
+
+        }
+        else{
+            double price = stockDataViewModel.getPriceById(id_of_stock);
+            stockDataViewModel.updateById(id_of_stock,(count_of_fav - count_int),price - ans);
+            updateUserMoneyNow(ans,userViewModel);
+        }
+        userInfoModel.all_stock_price_online -= ans;
+        userInfoModel.all_stock_price_bought -= ans;
+    }
+
+    private void updateUserMoneyNow(double ans, UserViewModel userViewModel){
+        userViewModel.userEntity.money = ans + userViewModel.userEntity.money;
     }
 }

@@ -94,13 +94,7 @@ public class buying_a_stock extends Fragment {
             public void onClick(View v) {
                 try {
                     String count = binding.gettingCountOfStocks.getText().toString();
-                    char symbol = count.charAt(0);
-                    if (symbol == '0' || symbol == '.' || symbol == ',') {
-                        Toast.makeText(buying_a_stock.this.getActivity(), "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    int count_int = Integer.parseInt(count);
-                    model.buyingStock(buying_a_stock.this.getActivity(),cost_d,name_of_stock,id_of_stock,AllID, count_int,userViewModel,stockDataViewModel,userInfoModel);
+                    model.buyingStock(buying_a_stock.this.getActivity(),cost_d,name_of_stock,id_of_stock,AllID, count,userViewModel,stockDataViewModel,userInfoModel);
                     navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
                 }
                 catch (StringIndexOutOfBoundsException exception){

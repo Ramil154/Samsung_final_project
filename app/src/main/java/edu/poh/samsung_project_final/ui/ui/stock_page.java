@@ -87,6 +87,8 @@ public class stock_page extends Fragment{
             @Override
             public void onDataLoaded() {
                 for (parseStockInfoModel parse: model.stock_page_list){
+                    Dates_onGraph.addAll(model.Dates_onGraph);
+                    graphics.addAll(model.graphics);
                     Log.d("StockPage","this");
                     binding.stockCostInGraphicsDate.setText(parse.stock_page_cost_of_stock);
                     System.out.println("BINDING   " + parse.stock_page_name_of_stock);
@@ -94,8 +96,7 @@ public class stock_page extends Fragment{
                     binding.plusOfStockDateAndPercent.setTextColor(Color.parseColor(parse.stock_page_colour));
                     binding.plusOfStockDateAndPercent.setText(parse.stock_page_persent_str);
                     cost[0] = parse.stock_page_cost_of_stock;
-                    Dates_onGraph.addAll(model.Dates_onGraph);
-                    graphics.addAll(model.graphics);
+
                 }
             }
         });
@@ -109,7 +110,7 @@ public class stock_page extends Fragment{
             public void run() {
                 setGraph(binding.graphicOfStockMonth,graphics,"Цена акций за месяц", cost[0]);
             }
-        },500);
+        },800);
         binding.ButtonForChoseToByuingStock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

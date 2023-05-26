@@ -1,7 +1,9 @@
 package edu.poh.samsung_project_final.ui.ui;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +32,12 @@ import org.json.JSONObject;
 
 import edu.poh.samsung_project_final.R;
 import edu.poh.samsung_project_final.databinding.DeleteStockFromFavBinding;
+import edu.poh.samsung_project_final.ui.data.DataLoadCallback;
 import edu.poh.samsung_project_final.ui.data.models.UserInfoModel;
+import edu.poh.samsung_project_final.ui.data.models.parseStockInfoModel;
 import edu.poh.samsung_project_final.ui.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.ui.view_models.UserViewModel;
+import edu.poh.samsung_project_final.ui.ui.view_models.stockSearchViewModel;
 
 public class DeleteStockFromFav extends Fragment {
     DeleteStockFromFavBinding binding;
@@ -40,6 +45,7 @@ public class DeleteStockFromFav extends Fragment {
     private NavController navController;
     private UserViewModel userViewModel;
     private StockDataViewModel stockDataViewModel;
+    private stockSearchViewModel model;
     private String id_of_stock;
     private final String KEY_ID = "1";
     private final String COUNT_ID = "3";
@@ -58,6 +64,8 @@ public class DeleteStockFromFav extends Fragment {
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main);
         navController = navHostFragment.getNavController();
         userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        model = new ViewModelProvider(getActivity()).get(stockSearchViewModel.class);
+        stockDataViewModel = new ViewModelProvider(this).get(StockDataViewModel.class);
         userInfoModel = LogoFragment.userInfoModel;
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -68,45 +76,30 @@ public class DeleteStockFromFav extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         DeleteStockFromFav.super.onViewCreated(view, savedInstanceState);
-        this.stockDataViewModel = new ViewModelProvider(this).get(StockDataViewModel.class);
         Bundle args = getArguments();
         id_of_stock = args.getString(KEY_ID);
+        model.setAllForStockPage(id_of_stock, requireContext(), new DataLoadCallback() {
+            @Override
+            public void onDataLoaded() {
+                for (parseStockInfoModel parse: model.stock_page_list){
+                    name_of_stock = parse.stock_page_name_of_stock;
+                    cost_of_stock = parse.stock_page_cost_of_stock;
+                    cost_d = Double.parseDouble(cost_of_stock);
+                    binding.stocksDeleteName.setText(name_of_stock);
+                    binding.stocksDeleteCost.setText(cost_of_stock);
+                }
+            }
+        });
         quantity = args.getString(COUNT_ID);
         binding.gettingCountOfStocksToDelete.setHint("Количество акций: " + quantity);
         int count_of_fav = Integer.parseInt(quantity);
-        parseStockDataCost(id_of_stock);
         binding.DeleteGoToFavourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try{
                     String count = binding.gettingCountOfStocksToDelete.getText().toString();
-                    char symbol = count.charAt(0);
-                    if (symbol == '0' || symbol == '.' || symbol == ','){
-                        Toast.makeText(DeleteStockFromFav.this.getActivity(), "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    int count_int = Integer.parseInt(count);
-                    double ans = cost_d * count_int;
-                    if (count_int > count_of_fav){
-                        Toast.makeText(DeleteStockFromFav.this.getActivity(), "Вы указали количество акций большее, чем у вас в избранных", Toast.LENGTH_SHORT).show();
-                    }
-                    else if(count_int == count_of_fav){
-                        stockDataViewModel.deleteById(id_of_stock);
-                        updateUserMoneyNow(ans);
-                        databaseReference.child("Users")
-                                .child(mAuth.getCurrentUser().getUid())
-                                .child("favourites")
-                                .child(id_of_stock)
-                                .setValue(null);
-
-                    }
-                    else{
-                        double price = stockDataViewModel.getPriceById(id_of_stock);
-                        stockDataViewModel.updateById(id_of_stock,(count_of_fav - count_int),price - ans);
-                        updateUserMoneyNow(ans);
-                    }
-                    userInfoModel.all_stock_price_online -= ans;
-                    userInfoModel.all_stock_price_bought -= ans;
+                    model.deleteStock(DeleteStockFromFav.this.getActivity(),cost_d,count,id_of_stock,count_of_fav,userViewModel,stockDataViewModel,userInfoModel);
+                    navController.navigate(R.id.action_delete_stock_from_fav_to_favourites_of_character);
                 }
                 catch (StringIndexOutOfBoundsException exception){
                     Toast.makeText(DeleteStockFromFav.this.getActivity(), "В поле «Введите количество акций, которые хотите удалить из избранных» вы ничего не ввели", Toast.LENGTH_SHORT).show();
@@ -114,49 +107,4 @@ public class DeleteStockFromFav extends Fragment {
             }
         });
     }
-    private void updateUserMoneyNow(double ans){
-        userViewModel.userEntity.money = ans + userViewModel.userEntity.money;
-        navController.navigate(R.id.action_delete_stock_from_fav_to_favourites_of_character);
-    }
-    private void parseStockDataCost(String sid) {
-        String url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/"+sid+".json";
-        RequestQueue queque = Volley.newRequestQueue(requireContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            setStockAndCost(response);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        });
-        queque.add(stringRequest);
-    }
-
-    @SuppressLint({"SetTextI18n", "DefaultLocale"})
-    private void setStockAndCost(String response) throws JSONException {
-        JSONObject jsonObject = new JSONObject(response);
-        JSONObject obj = jsonObject.getJSONObject("securities");
-        JSONArray data = obj.getJSONArray("data");
-        for (int i = 0; i < data.length();i++){
-            JSONArray data_next = data.getJSONArray(i);
-            String boardid = data_next.getString(1);
-            if (!boardid.equals("TQBR")){
-                continue;
-            }
-            name_of_stock = data_next.getString(9);
-            cost_d = data_next.optDouble(3);
-            cost_of_stock = cost_d.toString();
-            binding.stocksDeleteName.setText(name_of_stock);
-            binding.stocksDeleteCost.setText(cost_of_stock + " руб");
-        }
-
-    }
-
 }

@@ -82,7 +82,11 @@ public class stockSearchViewModel extends AndroidViewModel implements parseStock
         this.graphics.addAll(graphics);
     }
 
-    public void buyingStock(Activity activity, Double cost_d, String name_of_stock, String id_of_stock, List<String> AllID, int count_int, UserViewModel userViewModel, StockDataViewModel stockDataViewModel, UserInfoModel userInfoModel){
-        InfoModel.buyingStock(activity,cost_d,name_of_stock,id_of_stock,AllID,count_int,userViewModel,stockDataViewModel,userInfoModel);
+    public void buyingStock(Activity activity, Double cost_d, String name_of_stock, String id_of_stock, List<String> AllID, String count, UserViewModel userViewModel, StockDataViewModel stockDataViewModel, UserInfoModel userInfoModel){
+        InfoModel.buyingStock(activity,cost_d,name_of_stock,id_of_stock,AllID,count,userViewModel,stockDataViewModel,userInfoModel);
+    }
+
+    public void deleteStock(Activity activity,Double cost_d, String count, String id_of_stock,int count_of_fav, UserViewModel userViewModel, StockDataViewModel stockDataViewModel,UserInfoModel userInfoModel){
+        InfoModel.deleteStock(activity,cost_d,count,id_of_stock,count_of_fav,userViewModel,stockDataViewModel,userInfoModel);
     }
 }
