@@ -40,6 +40,7 @@ import edu.poh.samsung_project_final.ui.data.models.UserInfoModel;
 import edu.poh.samsung_project_final.databinding.FragmentLogoBinding;
 import edu.poh.samsung_project_final.ui.ui.view_models.StockDataViewModel;
 import edu.poh.samsung_project_final.ui.ui.view_models.UserViewModel;
+import edu.poh.samsung_project_final.ui.ui.view_models.ValutesViewModel;
 
 public class LogoFragment extends Fragment {
     private FragmentLogoBinding binding;
@@ -47,6 +48,7 @@ public class LogoFragment extends Fragment {
     private NavController navController;
     private UserViewModel userViewModel;
     public static UserInfoModel userInfoModel;
+    private ValutesViewModel valutesViewModel;
     private StockDataViewModel stockDataViewModel;
     private final String NOT_LOG = "Not correct log";
 
@@ -58,6 +60,7 @@ public class LogoFragment extends Fragment {
         navController = navHostFragment.getNavController();
         userViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         stockDataViewModel = new ViewModelProvider(getActivity()).get(StockDataViewModel.class);
+        valutesViewModel = new ViewModelProvider(this).get(ValutesViewModel.class);
         userInfoModel = new UserInfoModel();
         return binding.getRoot();
     }
@@ -72,7 +75,7 @@ public class LogoFragment extends Fragment {
                 public void run() {
                     getActivity().finish();
                 }
-            }, 1700);
+            }, 1500);
         }
         else {
             userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
@@ -98,14 +101,19 @@ public class LogoFragment extends Fragment {
                                             public void onChanged(List<StockEntity> stockEntities) {
                                                 for (int i = 0; i < stockEntities.size(); i++) {
                                                     StockEntity stock = stockEntities.get(i);
-                                                    parseStockDataCost(stock.id_of_stock, stock.quantity_of_stock_ent);
+                                                    valutesViewModel.getOnlineCost(requireContext(), stock.id_of_stock, stock.quantity_of_stock_ent, new DataLoadCallback() {
+                                                        @Override
+                                                        public void onDataLoaded() {
+                                                            userInfoModel.all_stock_price_online += valutesViewModel.getCostOnlineStocks();
+                                                        }
+                                                    });
                                                 }
                                                 new android.os.Handler().postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
                                                         navController.navigate(R.id.action_logoFragment_to_main_list_of_app);
                                                     }
-                                                }, 2300);
+                                                }, 2000);
                                                 //navController.navigate(R.id.action_logoFragment_to_main_list_of_app);
                                             }
                                         });
@@ -121,46 +129,7 @@ public class LogoFragment extends Fragment {
             });
         }
     }
-
-    private void parseStockDataCost(String sid,Integer quantity) {
-        String url = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/"+sid+".json";
-        RequestQueue queque = Volley.newRequestQueue(requireContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            setStockAndCost(response,quantity);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        });
-        queque.add(stringRequest);
-    }
-
-    @SuppressLint({"SetTextI18n", "DefaultLocale"})
-    private void setStockAndCost(String response,Integer quantity) throws JSONException {
-        JSONObject jsonObject = new JSONObject(response);
-        JSONObject obj = jsonObject.getJSONObject("securities");
-        JSONArray data = obj.getJSONArray("data");
-        for (int i = 0; i < data.length(); i++) {
-            JSONArray data_next = data.getJSONArray(i);
-            String boardid = data_next.getString(1);
-            if (!boardid.equals("TQBR")) {
-                continue;
-            }
-            double cost_d = data_next.optDouble(3);
-            double cost_final = cost_d * quantity;
-            userInfoModel.all_stock_price_online += cost_final;
-        }
-
-    }
-
+    //userInfoModel.all_stock_price_online += cost_final;
     public UserInfoModel getUserInfoModel(){
         return userInfoModel;
     }
