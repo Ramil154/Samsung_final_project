@@ -51,17 +51,6 @@ public class RememberLogin extends Fragment {
                     userViewModel.userEntity.login = binding.LoginMemorise.getText().toString();
                     Log.d("LoginUser", userViewModel.userEntity.login);
                     navController.navigate(R.id.action_rememberLogin_to_main_list_of_app);
-//                    userViewModel.getUser().observe(getViewLifecycleOwner(), new Observer<UserEntity>() {
-//                        @Override
-//                        public void onChanged(UserEntity userEntity) {
-//                            //userViewModel.userEntity.login = userEntity.login;
-//                            userViewModel.userEntity.email = userEntity.email;
-//                            userViewModel.userEntity.money = userEntity.money;
-//                            userViewModel.userEntity.password = userEntity.password;
-//
-//                        }
-//                    });
-
                 }
             }
         });
