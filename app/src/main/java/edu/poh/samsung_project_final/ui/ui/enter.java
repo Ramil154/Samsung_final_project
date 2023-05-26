@@ -82,7 +82,7 @@ public class enter extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
-                                userViewModel.uploadUserDataFromFireBase(new DataLoadCallback() {
+                                userViewModel.uploadUserDataFromFireBase(requireContext(),new DataLoadCallback() {
                                     @Override
                                     public void onDataLoaded() {
                                         userViewModel.insertUser(new UserEntity(email,password,userViewModel.userEntity.money,userViewModel.userEntity.login));

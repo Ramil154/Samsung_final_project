@@ -258,39 +258,27 @@ public class parseStockInfoModel{
         parseStockDataCost(id,context,callback);
     }
 
-    public void buyingStock(Activity activity,Double cost_d, String name_of_stock, String id_of_stock, List<String> AllID, String count, UserViewModel userViewModel, StockDataViewModel stockDataViewModel,UserInfoModel userInfoModel){
-        char symbol = count.charAt(0);
-        if (symbol == '0' || symbol == '.' || symbol == ',') {
-            Toast.makeText(activity, "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        int count_int = Integer.parseInt(count);
-        double ans = cost_d * (double) count_int;
-        double money = userViewModel.userEntity.money;
-        if (ans > money) {
-            Toast.makeText(activity, "Вы превысили ваш бюджет", Toast.LENGTH_SHORT).show();
+    public void buyingStock(double ans,double money, int count_int, String name_of_stock, String id_of_stock, List<String> AllID, String count, UserViewModel userViewModel, StockDataViewModel stockDataViewModel,UserInfoModel userInfoModel){
+        double balance = money - ans;
+        if (AllID.isEmpty()) {
+            stockDataViewModel.insertStock(new StockEntity(id_of_stock, name_of_stock, count_int, ans));
+            updateAll(ans, balance, userInfoModel, userViewModel);
         } else {
-            double balance = money - ans;
-            if (AllID.isEmpty()) {
+            boolean flag = false;
+            for (int i = 0; i < AllID.size(); i++) {
+                String id = AllID.get(i);
+                if (id.equals(id_of_stock)) {
+                    flag = true;
+                    double price = stockDataViewModel.getPriceById(id);
+                    Integer quantity = stockDataViewModel.getQuantityById(id);
+                    stockDataViewModel.updateById(id_of_stock, quantity + count_int, price + ans);
+                    updateAll(ans, balance,userInfoModel,userViewModel);
+                    break;
+                }
+            }
+            if (!flag) {
                 stockDataViewModel.insertStock(new StockEntity(id_of_stock, name_of_stock, count_int, ans));
                 updateAll(ans, balance, userInfoModel, userViewModel);
-            } else {
-                boolean flag = false;
-                for (int i = 0; i < AllID.size(); i++) {
-                    String id = AllID.get(i);
-                    if (id.equals(id_of_stock)) {
-                        flag = true;
-                        double price = stockDataViewModel.getPriceById(id);
-                        Integer quantity = stockDataViewModel.getQuantityById(id);
-                        stockDataViewModel.updateById(id_of_stock, quantity + count_int, price + ans);
-                        updateAll(ans, balance,userInfoModel,userViewModel);
-                        break;
-                    }
-                }
-                if (!flag) {
-                    stockDataViewModel.insertStock(new StockEntity(id_of_stock, name_of_stock, count_int, ans));
-                    updateAll(ans, balance, userInfoModel, userViewModel);
-                }
             }
         }
     }
@@ -301,21 +289,11 @@ public class parseStockInfoModel{
         userViewModel.userEntity.money = balance;
     }
 
-    public void deleteStock(Activity activity,Double cost_d, String count, String id_of_stock,int count_of_fav, UserViewModel userViewModel, StockDataViewModel stockDataViewModel,UserInfoModel userInfoModel){
+    public void deleteStock(Double ans, int count_int, String id_of_stock,int count_of_fav, UserViewModel userViewModel, StockDataViewModel stockDataViewModel,UserInfoModel userInfoModel){
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference();
-        char symbol = count.charAt(0);
-        if (symbol == '0' || symbol == '.' || symbol == ','){
-            Toast.makeText(activity, "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        int count_int = Integer.parseInt(count);
-        double ans = cost_d * count_int;
-        if (count_int > count_of_fav){
-            Toast.makeText(activity, "Вы указали количество акций большее, чем у вас в избранных", Toast.LENGTH_SHORT).show();
-        }
-        else if(count_int == count_of_fav){
+        if(count_int == count_of_fav){
             stockDataViewModel.deleteById(id_of_stock);
             updateUserMoneyNow(ans, userViewModel);
             databaseReference.child("Users")

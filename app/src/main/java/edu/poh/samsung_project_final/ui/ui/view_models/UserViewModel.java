@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import edu.poh.samsung_project_final.ui.data.DataLoadCallback;
+import edu.poh.samsung_project_final.ui.data.models.FireBaseModel;
 import edu.poh.samsung_project_final.ui.data.room.entities.UserEntity;
 import edu.poh.samsung_project_final.ui.data.repositories.UserRepository;
 
@@ -27,6 +28,7 @@ public class UserViewModel extends AndroidViewModel {
     private LiveData<UserEntity> userEntityLiveData;
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
+    private FireBaseModel fireBaseModel;
     private DatabaseReference databaseReference;
     public UserViewModel(@NonNull Application application) {
         super(application);
@@ -36,6 +38,7 @@ public class UserViewModel extends AndroidViewModel {
         userEntityLiveData = userRepository.getUser();
         userEntity = new UserEntity();
         context = application.getApplicationContext();
+        fireBaseModel = new FireBaseModel();
 
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
@@ -64,28 +67,11 @@ public class UserViewModel extends AndroidViewModel {
 
     public void updateLogin(String login) {userRepository.updateLogin(login);}
 
-    public void loadUserDataToFireBase(){
-        databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("email").setValue(userEntity.email);
-        databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("login").setValue(userEntity.login);
-        databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("money").setValue(userEntity.money);
-        databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("password").setValue(userEntity.password);
+    public void loadUserDataToFireBase(String email, String login, double money, String password){
+        fireBaseModel.loadUserToFireBase(email,login, money,password);
     }
 
-    public void uploadUserDataFromFireBase(DataLoadCallback callback){
-        databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userEntity.login = snapshot.child("login").getValue().toString();
-                userEntity.email = snapshot.child("email").getValue().toString();
-                userEntity.password = snapshot.child("password").getValue().toString();
-                userEntity.money = snapshot.child("money").getValue(Double.class);
-                //userEntity.money = Double.parseDouble(money_str);
-                callback.onDataLoaded();
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(context, "Не удалось загрузить данные из базы. Будут использованы локальные данные", Toast.LENGTH_SHORT).show();
-            }
-        });
+    public void uploadUserDataFromFireBase(Context context , DataLoadCallback callback){
+        fireBaseModel.uploadUserFromFireBase(userEntity, callback, context);
     }
 }

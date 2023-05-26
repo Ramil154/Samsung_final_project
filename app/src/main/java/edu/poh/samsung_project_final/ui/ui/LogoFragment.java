@@ -84,7 +84,7 @@ public class LogoFragment extends Fragment {
                     if (userEntity == null) {
                         navController.navigate(R.id.action_logoFragment_to_enter);
                     } else {
-                        userViewModel.uploadUserDataFromFireBase(new DataLoadCallback() {
+                        userViewModel.uploadUserDataFromFireBase(requireContext(),new DataLoadCallback() {
                             @Override
                             public void onDataLoaded() {
                                 try{

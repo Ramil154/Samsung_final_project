@@ -98,8 +98,21 @@ public class DeleteStockFromFav extends Fragment {
             public void onClick(View v) {
                 try{
                     String count = binding.gettingCountOfStocksToDelete.getText().toString();
-                    model.deleteStock(DeleteStockFromFav.this.getActivity(),cost_d,count,id_of_stock,count_of_fav,userViewModel,stockDataViewModel,userInfoModel);
-                    navController.navigate(R.id.action_delete_stock_from_fav_to_favourites_of_character);
+                    char symbol = count.charAt(0);
+                    if (symbol == '0' || symbol == '.' || symbol == ','){
+                        Toast.makeText(DeleteStockFromFav.this.getActivity(), "В поле «Введите количество акций» вы ввели не число или не целое число", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    int count_int = Integer.parseInt(count);
+                    double ans = cost_d * count_int;
+                    if (count_int > count_of_fav){
+                        Toast.makeText(DeleteStockFromFav.this.getActivity(), "Вы указали количество акций большее, чем у вас в избранных", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        model.deleteStock(ans,count_int,id_of_stock,count_of_fav,userViewModel,stockDataViewModel,userInfoModel);
+                        navController.navigate(R.id.action_delete_stock_from_fav_to_favourites_of_character);
+                    }
+
                 }
                 catch (StringIndexOutOfBoundsException exception){
                     Toast.makeText(DeleteStockFromFav.this.getActivity(), "В поле «Введите количество акций, которые хотите удалить из избранных» вы ничего не ввели", Toast.LENGTH_SHORT).show();

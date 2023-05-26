@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         if (mAuth.getCurrentUser() != null) {
             userViewModel.update(userViewModel.userEntity.password, userViewModel.userEntity.money, userViewModel.userEntity.login);
             if (isNetworkAvailable()) {
-                userViewModel.loadUserDataToFireBase();
+                userViewModel.loadUserDataToFireBase(userViewModel.userEntity.email, userViewModel.userEntity.login, userViewModel.userEntity.money, userViewModel.userEntity.password);
                 stockDataViewModel.getIdOfStock().observe(this, new Observer<List<StockEntity>>() {
                     @Override
                     public void onChanged(List<StockEntity> stockEntities) {
