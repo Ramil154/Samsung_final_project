@@ -106,7 +106,14 @@ public class buying_a_stock extends Fragment {
                         Toast.makeText(buying_a_stock.this.getActivity(), "Вы превысили ваш бюджет", Toast.LENGTH_SHORT).show();
                     }else{
                         model.buyingStock(ans, money, count_int, name_of_stock,id_of_stock,AllID, count,userViewModel,stockDataViewModel,userInfoModel);
-                        navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
+                        new android.os.Handler().postDelayed(new Runnable() {
+                            @SuppressLint({"DefaultLocale", "SetTextI18n"})
+                            @Override
+                            public void run() {
+                                navController.navigate(R.id.action_buying_a_stock_to_favourites_of_character);
+                            }
+                        }, 200);
+
                     }
                 }
                 catch (StringIndexOutOfBoundsException exception){

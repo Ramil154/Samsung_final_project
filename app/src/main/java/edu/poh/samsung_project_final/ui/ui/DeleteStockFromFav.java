@@ -110,7 +110,13 @@ public class DeleteStockFromFav extends Fragment {
                     }
                     else{
                         model.deleteStock(ans,count_int,id_of_stock,count_of_fav,userViewModel,stockDataViewModel,userInfoModel);
-                        navController.navigate(R.id.action_delete_stock_from_fav_to_favourites_of_character);
+                        new android.os.Handler().postDelayed(new Runnable() {
+                            @SuppressLint({"DefaultLocale", "SetTextI18n"})
+                            @Override
+                            public void run() {
+                                navController.navigate(R.id.action_delete_stock_from_fav_to_favourites_of_character);
+                            }
+                        }, 200);
                     }
 
                 }
